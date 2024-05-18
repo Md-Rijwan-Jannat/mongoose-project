@@ -1,31 +1,28 @@
 import { Schema, model } from 'mongoose';
 import {
-  Guardian,
-  Student,
-  StudentName,
-  LocalGuardian,
-} from './student.interface';
+  Instructor,
+  InstructorGuardian,
+  InstructorLocalGuardian,
+  InstructorName,
+} from './instructor.interface';
 
-// student name schema
-const studentName = new Schema<StudentName>({
+// instructor name schema
+const instructorName = new Schema<InstructorName>({
   firstName: {
     type: String,
     required: true,
-    unique: true,
   },
   middleName: {
     type: String,
-    unique: true,
   },
   lastName: {
     type: String,
     required: true,
-    unique: true,
   },
 });
 
-// student guardian schema
-const guardian = new Schema<Guardian>({
+// instructor guardian schema
+const guardian = new Schema<InstructorGuardian>({
   fatherName: {
     type: String,
     required: true,
@@ -52,8 +49,8 @@ const guardian = new Schema<Guardian>({
   },
 });
 
-// student local guardian schema
-const localGuardian = new Schema<LocalGuardian>({
+// instructor local guardian schema
+const localGuardian = new Schema<InstructorLocalGuardian>({
   name: {
     type: String,
     required: true,
@@ -72,14 +69,14 @@ const localGuardian = new Schema<LocalGuardian>({
   },
 });
 
-// student main schema
-const studentSchema = new Schema<Student>({
-  name: studentName,
-  email: { type: String, required: true, unique: true },
-  contactNo: { type: String, required: true, unique: true },
+// instructor main schema
+const instructorSchema = new Schema<Instructor>({
+  name: instructorName,
+  email: { type: String, required: true },
+  contactNo: { type: String, required: true },
   currentAddress: { type: String, required: true },
   permanentAddress: { type: String, required: true },
-  emergencyContactNo: { type: String, required: true, unique: true },
+  emergencyContactNo: { type: String, required: true },
   gender: ['Male', 'Female'],
   religion: ['Islam', 'Hindu', 'Christian', 'Buddhist', 'Others'],
   bloodGroup: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
@@ -88,9 +85,12 @@ const studentSchema = new Schema<Student>({
   dateOfBirth: { type: String, required: true },
   admissionFee: { type: Number, required: true },
   admissionDate: { type: Date, required: true },
-  studentAvatar: { type: String, required: true },
+  instructorAvatar: { type: String, required: true },
   isActive: ['active', 'blocked'],
 });
 
 // create model
-export const StudentModel = model<Student>('Student', studentSchema);
+export const InstructorModel = model<Instructor>(
+  'Instructor',
+  instructorSchema,
+);

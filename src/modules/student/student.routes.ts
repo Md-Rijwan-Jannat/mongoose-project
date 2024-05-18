@@ -1,8 +1,10 @@
 import express from 'express';
 import { StudentControllers } from './student.controllers';
 
-const route = express.Router();
+const router = express.Router();
 
-route.post('/create-student', StudentControllers.createStudent);
+router.post('/create-student', StudentControllers.createStudent);
+router.get('/single-student', StudentControllers.getSingleStudent);
+router.get('/', StudentControllers.grtAllStudents);
 
-export default route;
+export const StudentRoutes = router;
