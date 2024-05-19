@@ -1,10 +1,10 @@
-export interface StudentName {
+export interface TStudentName {
   firstName: string;
   middleName?: string;
   lastName: string;
 }
 
-export interface Guardian {
+export interface TGuardian {
   fatherName: string;
   fatherContactNo: string;
   fatherOccupation: string;
@@ -13,15 +13,15 @@ export interface Guardian {
   motherOccupation: string;
 }
 
-export interface LocalGuardian {
+export interface TLocalGuardian {
   name: string;
   contactNo: string;
   address: string;
   email: string;
 }
 
-export interface Student {
-  name: StudentName;
+export interface TStudent {
+  name: TStudentName;
   email: string;
   contactNo: string;
   currentAddress: string;
@@ -30,8 +30,8 @@ export interface Student {
   gender: 'Male' | 'Female';
   religion: 'Islam' | 'Hindu' | 'Christian' | 'Buddhist' | 'Others';
   bloodGroup?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
-  localGuardian: LocalGuardian;
-  guardian: Guardian;
+  localGuardian: TLocalGuardian;
+  guardian: TGuardian;
   dateOfBirth: string;
   admissionFee: number;
   admissionDate: Date;

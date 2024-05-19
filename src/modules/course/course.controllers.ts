@@ -1,10 +1,15 @@
 import { Request, Response } from 'express';
 import { CourseServices } from './course.services';
+import courseSchema from './course.validation';
 
 const createCourse = async (req: Request, res: Response) => {
   try {
     const { course: courseData } = await req.body;
-    const result = await CourseServices.CreateCourseIntoDB(courseData);
+
+    // data validate using zod
+    const zodParseCourseData = courseSchema.parse(courseData);
+
+    const result = await CourseServices.CreateCourseIntoDB(zodParseCourseData);
     res.status(200).json({
       success: true,
       message: 'Course is created successfully',
@@ -13,8 +18,8 @@ const createCourse = async (req: Request, res: Response) => {
   } catch (error) {
     res.status(404).json({
       success: false,
-      message: 'Course are not created',
-      error,
+      message: 'Course validation filed',
+      error: error,
     });
   }
 };

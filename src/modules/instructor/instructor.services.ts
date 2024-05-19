@@ -1,8 +1,8 @@
-import { Instructor } from './instructor.interface';
+import { TInstructor } from './instructor.interface';
 import { InstructorModel } from './instructor.model';
 
 // Create instructor
-const createInstructorIntoDB = async (instructor: Instructor) => {
+const createInstructorIntoDB = async (instructor: TInstructor) => {
   const result = await InstructorModel.create(instructor);
   return result;
 };

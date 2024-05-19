@@ -1,10 +1,10 @@
-export interface InstructorName {
+export interface TInstructorName {
   firstName: string;
   middleName?: string;
   lastName: string;
 }
 
-export interface InstructorGuardian {
+export interface TInstructorGuardian {
   fatherName: string;
   fatherContactNo: string;
   fatherOccupation: string;
@@ -13,15 +13,15 @@ export interface InstructorGuardian {
   motherOccupation: string;
 }
 
-export interface InstructorLocalGuardian {
+export interface TInstructorLocalGuardian {
   name: string;
   contactNo: string;
   address: string;
   email: string;
 }
 
-export interface Instructor {
-  name: InstructorName;
+export interface TInstructor {
+  name: TInstructorName;
   email: string;
   contactNo: string;
   currentAddress: string;
@@ -30,8 +30,8 @@ export interface Instructor {
   gender: 'Male' | 'Female';
   religion: 'Islam' | 'Hindu' | 'Christian' | 'Buddhist' | 'Others';
   bloodGroup: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
-  guardian: InstructorGuardian;
-  localGuardian: InstructorLocalGuardian;
+  guardian: TInstructorGuardian;
+  localGuardian: TInstructorLocalGuardian;
   dateOfBirth: string;
   admissionFee: number;
   admissionDate: Date;

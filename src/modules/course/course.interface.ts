@@ -1,4 +1,4 @@
-export interface Instructor {
+export interface TInstructor {
   id: number;
   name: string;
   bio?: string;
@@ -6,32 +6,32 @@ export interface Instructor {
   contactEmail: string;
 }
 
-export interface Schedule {
+export interface TSchedule {
   day: string;
   startTime: string;
   endTime: string;
 }
 
-export interface Content {
+export interface TContent {
   title: string;
   description: string;
   duration: string;
   resources?: string[];
 }
 
-export interface Course {
+export interface TCourse {
   id: number;
   title: string;
   description: string;
   category: string;
   level: 'Beginner' | 'Intermediate' | 'Advanced';
   duration: string;
-  startDate: Date;
-  endDate: Date;
+  startDate: string;
+  endDate: string;
   price: number;
-  instructor: Instructor;
-  schedule: Schedule[];
-  contents: Content[];
+  instructor: TInstructor;
+  schedule: TSchedule[];
+  contents: TContent[];
   rating?: number;
   reviews?: string[];
   prerequisites?: string[];

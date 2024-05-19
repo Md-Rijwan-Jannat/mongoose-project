@@ -1,13 +1,13 @@
 import { Schema, model } from 'mongoose';
 import {
-  Instructor,
-  InstructorName,
-  InstructorGuardian,
-  InstructorLocalGuardian,
+  TInstructor,
+  TInstructorName,
+  TInstructorGuardian,
+  TInstructorLocalGuardian,
 } from './instructor.interface';
 
 // Instructor name schema
-const instructorNameSchema = new Schema<InstructorName>({
+const instructorNameSchema = new Schema<TInstructorName>({
   firstName: {
     type: String,
     required: true,
@@ -28,7 +28,7 @@ const instructorNameSchema = new Schema<InstructorName>({
 });
 
 // Instructor guardian schema
-const guardianSchema = new Schema<InstructorGuardian>({
+const guardianSchema = new Schema<TInstructorGuardian>({
   fatherName: {
     type: String,
     required: true,
@@ -64,7 +64,7 @@ const guardianSchema = new Schema<InstructorGuardian>({
 });
 
 // Instructor local guardian schema
-const localGuardianSchema = new Schema<InstructorLocalGuardian>({
+const localGuardianSchema = new Schema<TInstructorLocalGuardian>({
   name: {
     type: String,
     required: true,
@@ -90,7 +90,7 @@ const localGuardianSchema = new Schema<InstructorLocalGuardian>({
 });
 
 // Instructor main schema
-const instructorSchema = new Schema<Instructor>({
+const instructorSchema = new Schema<TInstructor>({
   name: {
     type: instructorNameSchema,
     required: true,
@@ -172,7 +172,7 @@ const instructorSchema = new Schema<Instructor>({
   },
 });
 
-export const InstructorModel = model<Instructor>(
+export const InstructorModel = model<TInstructor>(
   'Instructor',
   instructorSchema,
 );
