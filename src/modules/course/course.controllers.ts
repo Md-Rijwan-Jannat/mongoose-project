@@ -1,0 +1,59 @@
+import { Request, Response } from 'express';
+import { CourseServices } from './course.services';
+
+const createCourse = async (req: Request, res: Response) => {
+  try {
+    const { course: courseData } = await req.body;
+    const result = await CourseServices.CreateCourseIntoDB(courseData);
+    res.status(200).json({
+      success: true,
+      message: 'Course is created successfully',
+      data: result,
+    });
+  } catch (error) {
+    res.status(404).json({
+      success: false,
+      message: 'Course are not created',
+      error,
+    });
+  }
+};
+
+const getAllCourse = async (req: Request, res: Response) => {
+  try {
+    const result = await CourseServices.GetAllCourseFromDB();
+    res.status(200).json({
+      success: true,
+      message: 'Course are retrieved successfully',
+      data: result,
+    });
+  } catch (error) {
+    res.status(404).json({
+      success: false,
+      message: 'Courses are not founded',
+    });
+  }
+};
+
+const getSingleCourse = async (req: Request, res: Response) => {
+  try {
+    const { _id } = req.query;
+    const result = await CourseServices.GetSingleCourseFromDB(_id as string);
+    res.status(200).json({
+      success: true,
+      message: 'Course is  retrieved successfully',
+      data: result,
+    });
+  } catch (error) {
+    res.status(404).json({
+      success: false,
+      message: 'Course is not founded',
+    });
+  }
+};
+
+export const CourseControllers = {
+  createCourse,
+  getAllCourse,
+  getSingleCourse,
+};

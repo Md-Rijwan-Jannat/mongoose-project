@@ -1,6 +1,7 @@
+import express, { Application, NextFunction, Request, Response } from 'express';
 import { InstructorRoutes } from './modules/instructor/instructor.routes';
 import { StudentRoutes } from './modules/student/student.routes';
-import express, { Application, NextFunction, Request, Response } from 'express';
+import { courseRoutes } from './modules/course/course.routes';
 const app: Application = express();
 import cors from 'cors';
 
@@ -18,6 +19,7 @@ const logger = (req: Request, res: Response, next: NextFunction) => {
 // Application routes
 app.use('/api/v1/students', logger, StudentRoutes);
 app.use('/api/v1/instructors', logger, InstructorRoutes);
+app.use('/api/v1/courses', courseRoutes);
 
 // server initialization
 app.get('/', (req: Request, res: Response) => {
