@@ -1,95 +1,177 @@
 import { Schema, model } from 'mongoose';
 import {
   Instructor,
+  InstructorName,
   InstructorGuardian,
   InstructorLocalGuardian,
-  InstructorName,
 } from './instructor.interface';
 
-// instructor name schema
-const instructorName = new Schema<InstructorName>({
+// Instructor name schema
+const instructorNameSchema = new Schema<InstructorName>({
   firstName: {
     type: String,
     required: true,
+    trim: true,
+    maxlength: 10,
   },
   middleName: {
     type: String,
+    trim: true,
+    maxlength: 10,
   },
   lastName: {
     type: String,
     required: true,
+    trim: true,
+    maxlength: 10,
   },
 });
 
-// instructor guardian schema
-const guardian = new Schema<InstructorGuardian>({
+// Instructor guardian schema
+const guardianSchema = new Schema<InstructorGuardian>({
   fatherName: {
     type: String,
     required: true,
+    trim: true,
   },
-  fatherVContactNo: {
+  fatherContactNo: {
     type: String,
     required: true,
+    unique: true,
+    trim: true,
   },
   fatherOccupation: {
     type: String,
     required: true,
+    trim: true,
   },
   motherName: {
     type: String,
     required: true,
+    trim: true,
   },
   motherContactNo: {
     type: String,
     required: true,
+    unique: true,
+    trim: true,
   },
   motherOccupation: {
     type: String,
     required: true,
+    trim: true,
   },
 });
 
-// instructor local guardian schema
-const localGuardian = new Schema<InstructorLocalGuardian>({
+// Instructor local guardian schema
+const localGuardianSchema = new Schema<InstructorLocalGuardian>({
   name: {
     type: String,
     required: true,
+    trim: true,
   },
   contactNo: {
     type: String,
     required: true,
+    unique: true,
+    trim: true,
   },
   address: {
     type: String,
+    required: true,
+    trim: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+  },
+});
+
+// Instructor main schema
+const instructorSchema = new Schema<Instructor>({
+  name: {
+    type: instructorNameSchema,
     required: true,
   },
   email: {
     type: String,
     required: true,
+    unique: true,
+    trim: true,
+  },
+  contactNo: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+  },
+  currentAddress: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  permanentAddress: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  emergencyContactNo: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+  },
+  gender: {
+    type: String,
+    enum: ['Male', 'Female'],
+    required: true,
+  },
+  religion: {
+    type: String,
+    enum: ['Islam', 'Hindu', 'Christian', 'Buddhist', 'Others'],
+    required: true,
+    trim: true,
+  },
+  bloodGroup: {
+    type: String,
+    enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
+    trim: true,
+  },
+  guardian: {
+    type: guardianSchema,
+    required: true,
+  },
+  localGuardian: {
+    type: localGuardianSchema,
+    required: true,
+  },
+  dateOfBirth: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  admissionFee: {
+    type: Number,
+    required: true,
+  },
+  admissionDate: {
+    type: Date,
+    required: true,
+  },
+  instructorAvatar: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  isActive: {
+    type: String,
+    enum: ['active', 'blocked'],
+    default: 'active',
   },
 });
 
-// instructor main schema
-const instructorSchema = new Schema<Instructor>({
-  name: instructorName,
-  email: { type: String, required: true },
-  contactNo: { type: String, required: true },
-  currentAddress: { type: String, required: true },
-  permanentAddress: { type: String, required: true },
-  emergencyContactNo: { type: String, required: true },
-  gender: ['Male', 'Female'],
-  religion: ['Islam', 'Hindu', 'Christian', 'Buddhist', 'Others'],
-  bloodGroup: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
-  guardian: guardian,
-  localGuardian: localGuardian,
-  dateOfBirth: { type: String, required: true },
-  admissionFee: { type: Number, required: true },
-  admissionDate: { type: Date, required: true },
-  instructorAvatar: { type: String, required: true },
-  isActive: ['active', 'blocked'],
-});
-
-// create model
 export const InstructorModel = model<Instructor>(
   'Instructor',
   instructorSchema,

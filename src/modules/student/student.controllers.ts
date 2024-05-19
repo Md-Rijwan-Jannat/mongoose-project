@@ -1,23 +1,34 @@
 import { NextFunction, Request, Response } from 'express';
-import { studentServices } from './student.services';
+import { StudentServices } from './student.services';
+import studentSValidationSchema from './student.validation';
 
 // Create student
-const createStudent = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+const createStudent = async (req: Request, res: Response) => {
   try {
     const { student: studentData } = await req.body;
-    const result = await studentServices.createStudentIntoDB(studentData);
+    const { error, value } = studentSValidationSchema.validate(studentData);
 
-    res.status(200).json({
-      success: true,
-      message: 'Student is created successfully',
-      data: result,
-    });
+    console.log({ error }, { value });
+    if (error) {
+      res.status(500).json({
+        success: false,
+        message: 'Student validation failed',
+        error: error.details,
+      });
+    } else {
+      const result = await StudentServices.createStudentIntoDB(value);
+      res.status(202).json({
+        success: true,
+        message: 'Student is created successfully',
+        data: result,
+      });
+    }
   } catch (error) {
-    next(error);
+    res.status(500).json({
+      success: false,
+      message: 'Student are not created',
+      error,
+    });
   }
 };
 
@@ -28,8 +39,8 @@ const grtAllStudents = async (
   next: NextFunction,
 ) => {
   try {
-    const result = await studentServices.getAllStudentFromDB();
-    res.status(200).json({
+    const result = await StudentServices.getAllStudentFromDB();
+    res.status(202).json({
       success: true,
       message: 'Student are retrieved successfully',
       data: result,
@@ -47,9 +58,9 @@ const getSingleStudent = async (
 ) => {
   try {
     const { _id } = req.query;
-    const result = await studentServices.getSingleStudentFromDB(_id as string);
+    const result = await StudentServices.getSingleStudentFromDB(_id as string);
 
-    res.status(200).json({
+    res.status(202).json({
       success: true,
       message: 'Student is retrieved successfully',
       data: result,

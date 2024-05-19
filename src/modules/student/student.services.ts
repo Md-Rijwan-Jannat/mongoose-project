@@ -19,7 +19,7 @@ const getSingleStudentFromDB = async (_id: string) => {
   return result;
 };
 
-export const studentServices = {
+export const StudentServices = {
   createStudentIntoDB,
   getAllStudentFromDB,
   getSingleStudentFromDB,

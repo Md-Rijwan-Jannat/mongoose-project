@@ -1,14 +1,12 @@
-import {} from 'mongoose';
-
 export interface InstructorName {
   firstName: string;
-  middleName: string;
+  middleName?: string;
   lastName: string;
 }
 
 export interface InstructorGuardian {
   fatherName: string;
-  fatherVContactNo: string;
+  fatherContactNo: string;
   fatherOccupation: string;
   motherName: string;
   motherContactNo: string;
@@ -37,6 +35,6 @@ export interface Instructor {
   dateOfBirth: string;
   admissionFee: number;
   admissionDate: Date;
-  instructorAvatar?: string;
+  instructorAvatar: string;
   isActive: 'active' | 'blocked';
 }

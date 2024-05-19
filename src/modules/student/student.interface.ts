@@ -1,14 +1,12 @@
-import {} from 'mongoose';
-
 export interface StudentName {
   firstName: string;
-  middleName: string;
+  middleName?: string;
   lastName: string;
 }
 
 export interface Guardian {
   fatherName: string;
-  fatherVContactNo: string;
+  fatherContactNo: string;
   fatherOccupation: string;
   motherName: string;
   motherContactNo: string;
@@ -31,12 +29,12 @@ export interface Student {
   emergencyContactNo: string;
   gender: 'Male' | 'Female';
   religion: 'Islam' | 'Hindu' | 'Christian' | 'Buddhist' | 'Others';
-  bloodGroup: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
-  guardian: Guardian;
+  bloodGroup?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
   localGuardian: LocalGuardian;
+  guardian: Guardian;
   dateOfBirth: string;
   admissionFee: number;
   admissionDate: Date;
-  studentAvatar?: string;
-  isActive: 'active' | 'blocked';
+  studentAvatar: string;
+  isActive?: 'active' | 'blocked';
 }
