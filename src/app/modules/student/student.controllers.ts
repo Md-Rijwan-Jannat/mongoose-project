@@ -7,8 +7,8 @@ const createStudent = async (req: Request, res: Response) => {
   try {
     const { student: studentData } = await req.body;
     const { error, value } = studentSValidationSchema.validate(studentData);
-
     console.log({ error }, { value });
+
     if (error) {
       res.status(500).json({
         success: false,
@@ -23,12 +23,13 @@ const createStudent = async (req: Request, res: Response) => {
         data: result,
       });
     }
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({
       success: false,
-      message: 'Student are not created',
+      message: error.message || 'Student are not created',
       error,
     });
+    console.log(error);
   }
 };
 

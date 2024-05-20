@@ -81,6 +81,12 @@ const localGuardianValidationSchema = Joi.object({
 
 // Define the main Joi validation schema for the student
 const studentSValidationSchema = Joi.object({
+  id: Joi.string().trim().required().messages({
+    'string.empty': 'Student id number is required',
+  }),
+  password: Joi.string().trim().required().messages({
+    'string.empty': 'Password is required',
+  }),
   name: studentNameSchema.required().messages({
     'object.base': 'Student name is required',
   }),

@@ -1,8 +1,14 @@
 import { Schema, model } from 'mongoose';
-import { TCourse } from './course.interface';
+import {
+  IContent,
+  ICourse,
+  ICourseModel,
+  IInstructor,
+  ISchedule,
+} from './course.interface';
 
 // Define the Instructor schema
-const instructorSchema = new Schema({
+const instructorSchema = new Schema<IInstructor>({
   id: { type: Number, required: true, trim: true },
   name: { type: String, required: true, trim: true },
   bio: { type: String, trim: true },
@@ -11,14 +17,14 @@ const instructorSchema = new Schema({
 });
 
 // Define the Schedule schema
-const scheduleSchema = new Schema({
+const scheduleSchema = new Schema<ISchedule>({
   day: { type: String, required: true, trim: true },
   startTime: { type: String, required: true, trim: true },
   endTime: { type: String, required: true, trim: true },
 });
 
 // Define the Content schema
-const contentSchema = new Schema({
+const contentSchema = new Schema<IContent>({
   title: { type: String, required: true, trim: true },
   description: { type: String, required: true, trim: true },
   duration: { type: String, required: true, trim: true },
@@ -26,7 +32,7 @@ const contentSchema = new Schema({
 });
 
 // Define the Course schema
-const courseSchema = new Schema({
+const courseSchema = new Schema<ICourse, ICourseModel>({
   id: { type: Number, required: true, trim: true, unique: true },
   title: { type: String, required: true, trim: true },
   description: { type: String, required: true, trim: true },
@@ -51,4 +57,9 @@ const courseSchema = new Schema({
   currentParticipants: { type: Number, trim: true },
 });
 
-export const CourseModel = model<TCourse>('Course', courseSchema);
+courseSchema.statics.isUserExists = async function (id: number) {
+  const existingUser = await Course.findOne({ id });
+  return existingUser;
+};
+
+export const Course = model<ICourse, ICourseModel>('Course', courseSchema);

@@ -71,6 +71,9 @@ const localGuardianValidationSchema = Joi.object({
 });
 
 const instructorValidationSchema = Joi.object({
+  id: Joi.string().trim().required().messages({
+    'string.empty': 'Student id number is required',
+  }),
   name: instructorNameValidationSchema.required().messages({
     'object.base': 'Instructor name is required.',
   }),

@@ -1,34 +1,35 @@
 import { Schema, model } from 'mongoose';
+import config from '../../config';
+import bcrypt from 'bcrypt';
 import {
-  TInstructor,
-  TInstructorName,
-  TInstructorGuardian,
-  TInstructorLocalGuardian,
-} from './instructor.interface';
+  IStudent,
+  IStudentName,
+  IGuardian,
+  ILocalGuardian,
+  TStudentModel,
+  IStudentMethods,
+} from './student.interface';
 
-// Instructor name schema
-const instructorNameSchema = new Schema<TInstructorName>({
+// Student name schema
+const studentNameSchema = new Schema<IStudentName>({
   firstName: {
     type: String,
     required: true,
     trim: true,
-    maxlength: 10,
   },
   middleName: {
     type: String,
     trim: true,
-    maxlength: 10,
   },
   lastName: {
     type: String,
     required: true,
     trim: true,
-    maxlength: 10,
   },
 });
 
-// Instructor guardian schema
-const guardianSchema = new Schema<TInstructorGuardian>({
+// Student guardian schema
+const guardianSchema = new Schema<IGuardian>({
   fatherName: {
     type: String,
     required: true,
@@ -63,8 +64,8 @@ const guardianSchema = new Schema<TInstructorGuardian>({
   },
 });
 
-// Instructor local guardian schema
-const localGuardianSchema = new Schema<TInstructorLocalGuardian>({
+// Student local guardian schema
+const localGuardianSchema = new Schema<ILocalGuardian>({
   name: {
     type: String,
     required: true,
@@ -89,10 +90,20 @@ const localGuardianSchema = new Schema<TInstructorLocalGuardian>({
   },
 });
 
-// Instructor main schema
-const instructorSchema = new Schema<TInstructor>({
+// Student main schema
+const studentSchema = new Schema<IStudent, TStudentModel, IStudentMethods>({
+  id: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: true,
+    unique: true,
+  },
   name: {
-    type: instructorNameSchema,
+    type: studentNameSchema,
     required: true,
   },
   email: {
@@ -139,12 +150,12 @@ const instructorSchema = new Schema<TInstructor>({
     enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
     trim: true,
   },
-  guardian: {
-    type: guardianSchema,
-    required: true,
-  },
   localGuardian: {
     type: localGuardianSchema,
+    required: true,
+  },
+  guardian: {
+    type: guardianSchema,
     required: true,
   },
   dateOfBirth: {
@@ -160,7 +171,7 @@ const instructorSchema = new Schema<TInstructor>({
     type: Date,
     required: true,
   },
-  instructorAvatar: {
+  studentAvatar: {
     type: String,
     required: true,
     trim: true,
@@ -172,7 +183,32 @@ const instructorSchema = new Schema<TInstructor>({
   },
 });
 
-export const InstructorModel = model<TInstructor>(
-  'Instructor',
-  instructorSchema,
+// pre hook middleware
+studentSchema.pre('save', async function (next) {
+  try {
+    console.log(this, 'pre hook: Instructor will be saved');
+    const password = this.password;
+    this.password = await bcrypt.hash(
+      password,
+      Number(config.password_salt_rounds),
+    );
+    next();
+  } catch (error: any) {
+    next(error);
+  }
+});
+
+// post hook middleware
+studentSchema.post('save', function () {
+  console.log(this, 'post hook: Instructor is saved DB');
+});
+
+studentSchema.methods.isUserExists = async (id: string) => {
+  const existingStudent = await Student.findOne({ id });
+  return existingStudent;
+};
+
+export const Student: TStudentModel = model<IStudent, TStudentModel>(
+  'Student',
+  studentSchema,
 );

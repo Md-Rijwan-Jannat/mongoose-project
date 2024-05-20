@@ -1,31 +1,35 @@
 import { Schema, model } from 'mongoose';
 import {
-  TStudent,
-  TStudentName,
-  TGuardian,
-  TLocalGuardian,
-} from './student.interface';
+  IInstructor,
+  IInstructorName,
+  IInstructorGuardian,
+  IInstructorLocalGuardian,
+  IInstructorModel,
+} from './instructor.interface';
 
-// Student name schema
-const studentNameSchema = new Schema<TStudentName>({
+// Instructor name schema
+const instructorNameSchema = new Schema<IInstructorName>({
   firstName: {
     type: String,
     required: true,
     trim: true,
+    maxlength: 10,
   },
   middleName: {
     type: String,
     trim: true,
+    maxlength: 10,
   },
   lastName: {
     type: String,
     required: true,
     trim: true,
+    maxlength: 10,
   },
 });
 
-// Student guardian schema
-const guardianSchema = new Schema<TGuardian>({
+// Instructor guardian schema
+const guardianSchema = new Schema<IInstructorGuardian>({
   fatherName: {
     type: String,
     required: true,
@@ -60,8 +64,8 @@ const guardianSchema = new Schema<TGuardian>({
   },
 });
 
-// Student local guardian schema
-const localGuardianSchema = new Schema<TLocalGuardian>({
+// Instructor local guardian schema
+const localGuardianSchema = new Schema<IInstructorLocalGuardian>({
   name: {
     type: String,
     required: true,
@@ -86,10 +90,15 @@ const localGuardianSchema = new Schema<TLocalGuardian>({
   },
 });
 
-// Student main schema
-const studentSchema = new Schema<TStudent>({
+// Instructor main schema
+const instructorSchema = new Schema<IInstructor, IInstructorModel>({
+  id: {
+    type: String,
+    required: true,
+    unique: true,
+  },
   name: {
-    type: studentNameSchema,
+    type: instructorNameSchema,
     required: true,
   },
   email: {
@@ -136,11 +145,14 @@ const studentSchema = new Schema<TStudent>({
     enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
     trim: true,
   },
+  guardian: {
+    type: guardianSchema,
+    required: true,
+  },
   localGuardian: {
     type: localGuardianSchema,
     required: true,
   },
-  guardian: { type: guardianSchema, required: true },
   dateOfBirth: {
     type: String,
     required: true,
@@ -154,7 +166,7 @@ const studentSchema = new Schema<TStudent>({
     type: Date,
     required: true,
   },
-  studentAvatar: {
+  instructorAvatar: {
     type: String,
     required: true,
     trim: true,
@@ -166,4 +178,21 @@ const studentSchema = new Schema<TStudent>({
   },
 });
 
-export const TStudentModel = model<TStudent>('Student', studentSchema);
+// create custom a instance methods
+
+// instructorSchema.methods.isUserExists = async (id: string) => {
+//   const instructor = await Instructor.findOne({ id });
+//   return instructor;
+// };
+
+// create a custom static methods
+
+instructorSchema.statics.isExistingInstructor = async function (id: string) {
+  const existingInstructor = await Instructor.findOne({ id });
+  return existingInstructor;
+};
+
+export const Instructor = model<IInstructor, IInstructorModel>(
+  'Instructor',
+  instructorSchema,
+);

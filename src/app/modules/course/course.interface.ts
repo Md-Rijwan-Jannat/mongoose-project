@@ -1,4 +1,6 @@
-export interface TInstructor {
+import { Model } from 'mongoose';
+
+export interface IInstructor {
   id: number;
   name: string;
   bio?: string;
@@ -6,20 +8,20 @@ export interface TInstructor {
   contactEmail: string;
 }
 
-export interface TSchedule {
+export interface ISchedule {
   day: string;
   startTime: string;
   endTime: string;
 }
 
-export interface TContent {
+export interface IContent {
   title: string;
   description: string;
   duration: string;
   resources?: string[];
 }
 
-export interface TCourse {
+export interface ICourse {
   id: number;
   title: string;
   description: string;
@@ -29,12 +31,17 @@ export interface TCourse {
   startDate: string;
   endDate: string;
   price: number;
-  instructor: TInstructor;
-  schedule: TSchedule[];
-  contents: TContent[];
+  instructor: IInstructor;
+  schedule: ISchedule[];
+  contents: IContent[];
   rating?: number;
   reviews?: string[];
   prerequisites?: string[];
   maxParticipants?: number;
   currentParticipants?: number;
+}
+
+// creating a static methods
+export interface ICourseModel extends Model<ICourse> {
+  isUserExists(id: number): Promise<ICourse | null>;
 }
