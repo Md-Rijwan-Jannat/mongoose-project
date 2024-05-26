@@ -45,6 +45,7 @@ export interface IInstructor {
 // create a custom static methods
 
 export interface IInstructorModel extends Model<IInstructor> {
+  // eslint-disable-next-line no-unused-vars
   isExistingInstructor(id: string): Promise<IInstructor | null>;
 }
 

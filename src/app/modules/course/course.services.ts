@@ -20,8 +20,17 @@ const GetSingleCourseFromDB = async (_id: string) => {
   return result;
 };
 
+const updateSingleCourseFromDB = async (_id: string) => {
+  const result = await Course.updateOne(
+    { _id },
+    { price: 5500, duration: '6 month' },
+  );
+  return result;
+};
+
 export const CourseServices = {
   CreateCourseIntoDB,
   GetAllCourseFromDB,
   GetSingleCourseFromDB,
+  updateSingleCourseFromDB,
 };

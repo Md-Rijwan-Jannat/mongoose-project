@@ -1,64 +1,55 @@
-import { Request, Response } from 'express';
-import { CourseServices } from './course.services';
-import CourseSchema from './course.validation';
+/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { catchAsync } from "../../utils/catchAsync";
+import { CourseServices } from "./course.services";
+import CourseSchema from "./course.validation";
 
-const createCourse = async (req: Request, res: Response) => {
-  try {
-    const { course: courseData } = await req.body;
+const createCourse = catchAsync(async (req, res, next) => {
+  const { course: courseData } = await req.body;
 
-    // data validate using zod
-    const zodParseCourseData = CourseSchema.parse(courseData);
+  // data validate using zod
+  const zodParseCourseData = CourseSchema.parse(courseData);
 
-    const result = await CourseServices.CreateCourseIntoDB(zodParseCourseData);
-    res.status(200).json({
-      success: true,
-      message: 'Course is created successfully',
-      data: result,
-    });
-  } catch (error: any) {
-    res.status(404).json({
-      success: false,
-      message: error.message || 'Course validation filed',
-      error: error,
-    });
-  }
-};
+  const result = await CourseServices.CreateCourseIntoDB(zodParseCourseData);
+  res.status(200).json({
+    success: true,
+    message: "Course is created successfully",
+    data: result,
+  });
+});
 
-const getAllCourse = async (req: Request, res: Response) => {
-  try {
-    const result = await CourseServices.GetAllCourseFromDB();
-    res.status(200).json({
-      success: true,
-      message: 'Course are retrieved successfully',
-      data: result,
-    });
-  } catch (error) {
-    res.status(404).json({
-      success: false,
-      message: 'Courses are not founded',
-    });
-  }
-};
+const getAllCourse = catchAsync(async (req, res, next) => {
+  const result = await CourseServices.GetAllCourseFromDB();
+  res.status(200).json({
+    success: true,
+    message: "Course are retrieved successfully",
+    data: result,
+  });
+});
 
-const getSingleCourse = async (req: Request, res: Response) => {
-  try {
-    const { _id } = req.query;
-    const result = await CourseServices.GetSingleCourseFromDB(_id as string);
-    res.status(200).json({
-      success: true,
-      message: 'Course is  retrieved successfully',
-      data: result,
-    });
-  } catch (error) {
-    res.status(404).json({
-      success: false,
-      message: 'Course is not founded',
-    });
-  }
-};
+const getSingleCourse = catchAsync(async (req, res, next) => {
+  const { _id } = req.query;
+  const result = await CourseServices.GetSingleCourseFromDB(_id as string);
+  res.status(200).json({
+    success: true,
+    message: "Course is  retrieved successfully",
+    data: result,
+  });
+});
+
+const UpdateSingleCourse = catchAsync(async (req, res, next) => {
+  const { _id } = req.query;
+  const result = await CourseServices.updateSingleCourseFromDB(_id as string);
+  res.status(200).json({
+    success: true,
+    message: "Course update successfully",
+    data: result,
+  });
+});
 
 export const CourseControllers = {
   createCourse,
   getAllCourse,
   getSingleCourse,
+  UpdateSingleCourse,
 };

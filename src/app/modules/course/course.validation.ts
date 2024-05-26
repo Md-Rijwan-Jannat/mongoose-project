@@ -51,6 +51,11 @@ const courseSchema = z.object({
     .refine((val) => val >= 0, {
       message: 'Course id is required and must be a non-negative integer',
     }),
+  password: z
+    .string({
+      required_error: 'Password filed is required',
+    })
+    .min(8, { message: 'Password longer then 8 character' }),
   title: z.string({ required_error: 'Course title is required' }),
   description: z.string({ required_error: 'Course description is required' }),
   category: z.string({ required_error: 'Course category is required' }),

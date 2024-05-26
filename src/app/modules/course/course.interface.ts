@@ -23,6 +23,7 @@ export interface IContent {
 
 export interface ICourse {
   id: number;
+  password: string;
   title: string;
   description: string;
   category: string;
@@ -43,5 +44,6 @@ export interface ICourse {
 
 // creating a static methods
 export interface ICourseModel extends Model<ICourse> {
+  // eslint-disable-next-line no-unused-vars
   isUserExists(id: number): Promise<ICourse | null>;
 }

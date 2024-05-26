@@ -1,78 +1,54 @@
-import { NextFunction, Request, Response } from 'express';
-import { StudentServices } from './student.services';
-import studentSValidationSchema from './student.validation';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-unused-vars */
+import { NextFunction, Request, RequestHandler, Response } from "express";
+import { StudentServices } from "./student.services";
+import sendResponse from "../../utils/sendResponse";
+import httpStatus from "http-status";
 
-// Create student
-const createStudent = async (req: Request, res: Response) => {
-  try {
-    const { student: studentData } = await req.body;
-    const { error, value } = studentSValidationSchema.validate(studentData);
-    console.log({ error }, { value });
-
-    if (error) {
-      res.status(500).json({
-        success: false,
-        message: 'Student validation failed',
-        error: error.details,
-      });
-    } else {
-      const result = await StudentServices.createStudentIntoDB(value);
-      res.status(202).json({
-        success: true,
-        message: 'Student is created successfully',
-        data: result,
-      });
-    }
-  } catch (error: any) {
-    res.status(500).json({
-      success: false,
-      message: error.message || 'Student are not created',
-      error,
-    });
-    console.log(error);
-  }
+const catchAsync = (fn: RequestHandler) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    Promise.resolve(fn(req, res, next)).catch((err) => next(err));
+  };
 };
 
 // Get all student
-const grtAllStudents = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    const result = await StudentServices.getAllStudentFromDB();
-    res.status(202).json({
-      success: true,
-      message: 'Student are retrieved successfully',
-      data: result,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
+const grtAllStudents = catchAsync(async (req, res, next) => {
+  const result = await StudentServices.getAllStudentFromDB();
+
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Student are retrieved successfully",
+    data: result,
+  });
+});
 
 // Get single student
-const getSingleStudent = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    const { _id } = req.query;
-    const result = await StudentServices.getSingleStudentFromDB(_id as string);
+const getSingleStudent = catchAsync(async (req, res, next) => {
+  const { _id } = req.query;
+  const result = await StudentServices.getSingleStudentFromDB(_id as string);
 
-    res.status(202).json({
-      success: true,
-      message: 'Student is retrieved successfully',
-      data: result,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
+  sendResponse(res, {
+    success: true,
+    statusCode: httpStatus.OK,
+    message: "Student is retrieved successfully",
+    data: result,
+  });
+});
+
+const deleteStudent = catchAsync(async (req, res, next) => {
+  const { _id } = req.query;
+  const student = await StudentServices.deleteStudentFromDB(_id as string);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Student is deleted",
+    data: student,
+  });
+});
 
 export const StudentControllers = {
-  createStudent,
   grtAllStudents,
   getSingleStudent,
+  deleteStudent,
 };
