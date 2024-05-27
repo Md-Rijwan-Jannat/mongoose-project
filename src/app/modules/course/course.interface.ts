@@ -1,4 +1,4 @@
-import { Model } from 'mongoose';
+import { Model } from "mongoose";
 
 export interface IInstructor {
   id: number;
@@ -27,7 +27,7 @@ export interface ICourse {
   title: string;
   description: string;
   category: string;
-  level: 'Beginner' | 'Intermediate' | 'Advanced';
+  level: "Beginner" | "Intermediate" | "Advanced";
   duration: string;
   startDate: string;
   endDate: string;

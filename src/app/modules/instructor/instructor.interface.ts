@@ -1,4 +1,4 @@
-import { Model } from 'mongoose';
+import { Model } from "mongoose";
 
 export interface IInstructorName {
   firstName: string;
@@ -30,16 +30,16 @@ export interface IInstructor {
   currentAddress: string;
   permanentAddress: string;
   emergencyContactNo: string;
-  gender: 'Male' | 'Female';
-  religion: 'Islam' | 'Hindu' | 'Christian' | 'Buddhist' | 'Others';
-  bloodGroup: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
+  gender: "Male" | "Female";
+  religion: "Islam" | "Hindu" | "Christian" | "Buddhist" | "Others";
+  bloodGroup: "A+" | "A-" | "B+" | "B-" | "AB+" | "AB-" | "O+" | "O-";
   guardian: IInstructorGuardian;
   localGuardian: IInstructorLocalGuardian;
   dateOfBirth: string;
   admissionFee: number;
   admissionDate: Date;
   instructorAvatar: string;
-  isActive: 'active' | 'blocked';
+  isActive: "active" | "blocked";
 }
 
 // create a custom static methods

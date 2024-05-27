@@ -1,11 +1,9 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { InstructorServices } from "./instructor.services";
 import instructorValidationSchema from "./instructor.validation";
 import { catchAsync } from "../../utils/catchAsync";
 
 // Create instructor
-const createInstructor = catchAsync(async (req, res, next) => {
+const createInstructor = catchAsync(async (req, res) => {
   const { instructor: instructorData } = await req.body;
   const { error, value } = instructorValidationSchema.validate(instructorData);
   console.log({ error }, { value });
@@ -26,7 +24,7 @@ const createInstructor = catchAsync(async (req, res, next) => {
 });
 
 // Get all instructor
-const getAllInstructor = catchAsync(async (req, res, next) => {
+const getAllInstructor = catchAsync(async (req, res) => {
   const result = await InstructorServices.getAllInstructorFromDB();
   res.status(202).json({
     success: true,
@@ -36,7 +34,7 @@ const getAllInstructor = catchAsync(async (req, res, next) => {
 });
 
 // Get single instructor
-const getSingleInstructor = catchAsync(async (req, res, next) => {
+const getSingleInstructor = catchAsync(async (req, res) => {
   const { _id } = req.query;
   const result = await InstructorServices.getSingleInstructorFromDB(
     _id as string,

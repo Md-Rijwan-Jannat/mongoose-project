@@ -24,8 +24,8 @@ const globalErrorHandler = (
   return res.status(err.status || 500).json({
     success: false,
     status: "Global error!",
-    message: err.message || "Internal server error",
-    error: "",
+    message: "Internal server error",
+    err,
   });
 };
 

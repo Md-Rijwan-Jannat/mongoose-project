@@ -1,4 +1,4 @@
-import { Model, Types } from 'mongoose';
+import { Model, Types } from "mongoose";
 
 export interface IStudentName {
   firstName: string;
@@ -24,12 +24,13 @@ export interface ILocalGuardian {
 
 export interface IStudent {
   id: string;
+  semesterId: Types.ObjectId;
   user: Types.ObjectId;
   name: IStudentName;
-  dateOfBirth: string;
-  gender: 'Male' | 'Female';
-  religion: 'Islam' | 'Hindu' | 'Christian' | 'Buddhist' | 'Others';
-  bloodGroup?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
+  dateOfBirth: Date;
+  gender: "Male" | "Female";
+  religion: "Islam" | "Hindu" | "Christian" | "Buddhist" | "Others";
+  bloodGroup?: "A+" | "A-" | "B+" | "B-" | "AB+" | "AB-" | "O+" | "O-";
   email: string;
   contactNo: string;
   emergencyContactNo: string;
@@ -39,7 +40,6 @@ export interface IStudent {
   guardian: IGuardian;
   profileImage: string;
   academicDepartment: string;
-  isActive?: 'active' | 'blocked';
   isDeleted: boolean;
 }
 

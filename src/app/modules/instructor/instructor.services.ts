@@ -1,10 +1,10 @@
-import { IInstructor } from './instructor.interface';
-import { Instructor } from './instructor.model';
+import { IInstructor } from "./instructor.interface";
+import { Instructor } from "./instructor.model";
 
 // Create instructor
 const createInstructorIntoDB = async (instructorData: IInstructor) => {
   if (await Instructor.isExistingInstructor(instructorData.id)) {
-    throw new Error('Instructor already exists');
+    throw new Error("Instructor already exists");
   } else {
     const result = await Instructor.create(instructorData);
     return result;

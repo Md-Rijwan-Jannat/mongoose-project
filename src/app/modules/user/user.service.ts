@@ -1,8 +1,8 @@
-import config from '../../config';
-import { IStudent } from '../student/student.interface';
-import { Student } from '../student/student.model';
-import { IUser } from './user.interface';
-import { User } from './user.model';
+import config from "../../config";
+import { IStudent } from "../student/student.interface";
+import { Student } from "../student/student.model";
+import { IUser } from "./user.interface";
+import { User } from "./user.model";
 
 const studentCreateIntoDB = async (password: string, student: IStudent) => {
   const userData: Partial<IUser> = {};
@@ -11,10 +11,10 @@ const studentCreateIntoDB = async (password: string, student: IStudent) => {
   userData.password = password || (config.default_password as string);
 
   // student role set
-  userData.role = 'student';
+  userData.role = "student";
 
   // student id set
-  userData.id = '2030120001';
+  userData.id = "2030120001";
 
   // create the user
   const newUser = await User.create(userData);

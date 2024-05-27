@@ -1,11 +1,11 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model } from "mongoose";
 import {
   IInstructor,
   IInstructorName,
   IInstructorGuardian,
   IInstructorLocalGuardian,
   IInstructorModel,
-} from './instructor.interface';
+} from "./instructor.interface";
 
 // Instructor name schema
 const instructorNameSchema = new Schema<IInstructorName>({
@@ -131,18 +131,18 @@ const instructorSchema = new Schema<IInstructor, IInstructorModel>({
   },
   gender: {
     type: String,
-    enum: ['Male', 'Female'],
+    enum: ["Male", "Female"],
     required: true,
   },
   religion: {
     type: String,
-    enum: ['Islam', 'Hindu', 'Christian', 'Buddhist', 'Others'],
+    enum: ["Islam", "Hindu", "Christian", "Buddhist", "Others"],
     required: true,
     trim: true,
   },
   bloodGroup: {
     type: String,
-    enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
+    enum: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
     trim: true,
   },
   guardian: {
@@ -173,8 +173,8 @@ const instructorSchema = new Schema<IInstructor, IInstructorModel>({
   },
   isActive: {
     type: String,
-    enum: ['active', 'blocked'],
-    default: 'active',
+    enum: ["active", "blocked"],
+    default: "active",
   },
 });
 
@@ -193,6 +193,6 @@ instructorSchema.statics.isExistingInstructor = async function (id: string) {
 };
 
 export const Instructor = model<IInstructor, IInstructorModel>(
-  'Instructor',
+  "Instructor",
   instructorSchema,
 );

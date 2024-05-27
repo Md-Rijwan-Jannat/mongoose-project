@@ -1,10 +1,8 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { catchAsync } from "../../utils/catchAsync";
 import { CourseServices } from "./course.services";
 import CourseSchema from "./course.validation";
 
-const createCourse = catchAsync(async (req, res, next) => {
+const createCourse = catchAsync(async (req, res) => {
   const { course: courseData } = await req.body;
 
   // data validate using zod
@@ -18,7 +16,7 @@ const createCourse = catchAsync(async (req, res, next) => {
   });
 });
 
-const getAllCourse = catchAsync(async (req, res, next) => {
+const getAllCourse = catchAsync(async (req, res) => {
   const result = await CourseServices.GetAllCourseFromDB();
   res.status(200).json({
     success: true,
@@ -27,7 +25,7 @@ const getAllCourse = catchAsync(async (req, res, next) => {
   });
 });
 
-const getSingleCourse = catchAsync(async (req, res, next) => {
+const getSingleCourse = catchAsync(async (req, res) => {
   const { _id } = req.query;
   const result = await CourseServices.GetSingleCourseFromDB(_id as string);
   res.status(200).json({
@@ -37,7 +35,7 @@ const getSingleCourse = catchAsync(async (req, res, next) => {
   });
 });
 
-const UpdateSingleCourse = catchAsync(async (req, res, next) => {
+const UpdateSingleCourse = catchAsync(async (req, res) => {
   const { _id } = req.query;
   const result = await CourseServices.updateSingleCourseFromDB(_id as string);
   res.status(200).json({

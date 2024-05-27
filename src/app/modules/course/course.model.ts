@@ -1,13 +1,13 @@
-import { Schema, model } from 'mongoose';
-import bcrypt from 'bcrypt';
+import { Schema, model } from "mongoose";
+import bcrypt from "bcrypt";
 import {
   IContent,
   ICourse,
   ICourseModel,
   IInstructor,
   ISchedule,
-} from './course.interface';
-import config from '../../config';
+} from "./course.interface";
+import config from "../../config";
 
 // Define the Instructor schema
 const instructorSchema = new Schema<IInstructor>({
@@ -109,7 +109,7 @@ const courseSchema = new Schema<ICourse, ICourseModel>({
     type: String,
     required: true,
     trim: true,
-    enum: ['Beginner', 'Intermediate', 'Advanced'],
+    enum: ["Beginner", "Intermediate", "Advanced"],
   },
   duration: {
     type: String,
@@ -171,7 +171,7 @@ const courseSchema = new Schema<ICourse, ICourseModel>({
 });
 
 // pre and post middleware
-courseSchema.pre('save', async function () {
+courseSchema.pre("save", async function () {
   try {
     const password = this.password;
     this.password = await bcrypt.hash(
@@ -183,8 +183,8 @@ courseSchema.pre('save', async function () {
   }
 });
 
-courseSchema.post('save', function () {
-  this.password = '';
+courseSchema.post("save", function () {
+  this.password = "";
 });
 
 courseSchema.statics.isUserExists = async function (id: number) {
@@ -192,4 +192,4 @@ courseSchema.statics.isUserExists = async function (id: number) {
   return existingUser;
 };
 
-export const Course = model<ICourse, ICourseModel>('Course', courseSchema);
+export const Course = model<ICourse, ICourseModel>("Course", courseSchema);

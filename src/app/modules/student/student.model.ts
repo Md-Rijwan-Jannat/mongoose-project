@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model } from "mongoose";
 import {
   IStudent,
   IStudentName,
@@ -6,7 +6,7 @@ import {
   ILocalGuardian,
   TStudentModel,
   IStudentMethods,
-} from './student.interface';
+} from "./student.interface";
 
 // Student name schema
 const studentNameSchema = new Schema<IStudentName>({
@@ -95,10 +95,15 @@ const studentSchema = new Schema<IStudent, TStudentModel, IStudentMethods>(
       required: true,
       unique: true,
     },
+    semesterId: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: "Semester",
+    },
     user: {
       type: Schema.Types.ObjectId,
       required: true,
-      ref: 'User',
+      ref: "User",
     },
     name: {
       type: studentNameSchema,
@@ -106,18 +111,18 @@ const studentSchema = new Schema<IStudent, TStudentModel, IStudentMethods>(
     },
     gender: {
       type: String,
-      enum: ['Male', 'Female'],
+      enum: ["Male", "Female"],
       required: true,
     },
     religion: {
       type: String,
-      enum: ['Islam', 'Hindu', 'Christian', 'Buddhist', 'Others'],
+      enum: ["Islam", "Hindu", "Christian", "Buddhist", "Others"],
       required: true,
       trim: true,
     },
     bloodGroup: {
       type: String,
-      enum: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
+      enum: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
       trim: true,
     },
     email: {
@@ -127,7 +132,7 @@ const studentSchema = new Schema<IStudent, TStudentModel, IStudentMethods>(
       trim: true,
     },
     dateOfBirth: {
-      type: String,
+      type: Date,
       required: true,
       trim: true,
     },
@@ -185,24 +190,24 @@ const studentSchema = new Schema<IStudent, TStudentModel, IStudentMethods>(
 );
 
 // virtual
-studentSchema.virtual('fullName').get(function () {
+studentSchema.virtual("fullName").get(function () {
   return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`;
 });
 
 // Pre-find hooks
-studentSchema.pre('find', function (next) {
-  console.log('Pre-find hook triggered for find');
+studentSchema.pre("find", function (next) {
+  console.log("Pre-find hook triggered for find");
   this.find({ isDeleted: { $eq: false } });
   next();
 });
 
-studentSchema.pre('findOne', function (next) {
+studentSchema.pre("findOne", function (next) {
   this.findOne({ isDeleted: { $eq: false } });
   next();
-  console.log('Pre-findOne hook triggered for find');
+  console.log("Pre-findOne hook triggered for find");
 });
 
-studentSchema.pre('aggregate', function (next) {
+studentSchema.pre("aggregate", function (next) {
   this.pipeline().unshift({ $match: { isDeleted: { $eq: false } } });
 
   next();
@@ -215,6 +220,6 @@ studentSchema.methods.isUserExists = async function (id: string) {
 };
 
 export const Student: TStudentModel = model<IStudent, TStudentModel>(
-  'Student',
+  "Student",
   studentSchema,
 );

@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-unused-vars */
 import { NextFunction, Request, RequestHandler, Response } from "express";
 import { StudentServices } from "./student.services";
 import sendResponse from "../../utils/sendResponse";
@@ -12,7 +10,7 @@ const catchAsync = (fn: RequestHandler) => {
 };
 
 // Get all student
-const grtAllStudents = catchAsync(async (req, res, next) => {
+const grtAllStudents = catchAsync(async (req, res) => {
   const result = await StudentServices.getAllStudentFromDB();
 
   sendResponse(res, {
@@ -24,7 +22,7 @@ const grtAllStudents = catchAsync(async (req, res, next) => {
 });
 
 // Get single student
-const getSingleStudent = catchAsync(async (req, res, next) => {
+const getSingleStudent = catchAsync(async (req, res) => {
   const { _id } = req.query;
   const result = await StudentServices.getSingleStudentFromDB(_id as string);
 
@@ -36,7 +34,7 @@ const getSingleStudent = catchAsync(async (req, res, next) => {
   });
 });
 
-const deleteStudent = catchAsync(async (req, res, next) => {
+const deleteStudent = catchAsync(async (req, res) => {
   const { _id } = req.query;
   const student = await StudentServices.deleteStudentFromDB(_id as string);
   sendResponse(res, {
