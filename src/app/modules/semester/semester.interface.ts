@@ -16,14 +16,15 @@ export type TSemesterName = "Autumn" | "Summer" | "Fall";
 
 export type TSemesterCode = "01" | "02" | "03";
 
-export type TSemesterExam = "Meet Tram Exam" | "Semester Final Exam";
+export interface ISemesterCodeMapper {
+  [key: string]: string;
+}
 
 export interface ISemester {
   name: TSemesterName;
-  year: Date;
+  year: string;
   code: TSemesterCode;
   startMonth: TMonths;
   endMonth: TMonths;
-  exam: TSemesterExam;
   isDeleted: boolean;
 }

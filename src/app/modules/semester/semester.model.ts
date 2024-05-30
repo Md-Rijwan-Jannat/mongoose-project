@@ -1,41 +1,6 @@
 import { Schema, model } from "mongoose";
-import {
-  ISemester,
-  TMonths,
-  TSemesterCode,
-  TSemesterExam,
-  TSemesterName,
-} from "./semester.interface";
-
-export const months: readonly TMonths[] = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-] as const;
-
-export const semesterName: readonly TSemesterName[] = [
-  "Autumn",
-  "Summer",
-  "Fall",
-] as const;
-export const semesterCode: readonly TSemesterCode[] = [
-  "01",
-  "02",
-  "03",
-] as const;
-export const semesterExam: readonly TSemesterExam[] = [
-  "Meet Tram Exam",
-  "Semester Final Exam",
-] as const;
+import { ISemester } from "./semester.interface";
+import { months, semesterCode, semesterName } from "./semester.constants";
 
 export const semesterSchema = new Schema<ISemester>(
   {
@@ -45,7 +10,7 @@ export const semesterSchema = new Schema<ISemester>(
       required: true,
     },
     year: {
-      type: Date,
+      type: String,
       required: true,
       trim: true,
     },
@@ -64,11 +29,6 @@ export const semesterSchema = new Schema<ISemester>(
       enum: months,
       required: true,
     },
-    exam: {
-      type: String,
-      enum: semesterExam,
-      required: true,
-    },
     isDeleted: {
       type: Boolean,
       default: false,
@@ -78,5 +38,17 @@ export const semesterSchema = new Schema<ISemester>(
     timestamps: true,
   },
 );
+
+semesterSchema.pre("save", async function (next) {
+  const isSemesterExists = await Semester.findOne({
+    name: this.name,
+    year: this.year,
+  });
+
+  if (isSemesterExists) {
+    throw new Error("Semester already exists!");
+  }
+  next();
+});
 
 export const Semester = model<ISemester>("Semester", semesterSchema);

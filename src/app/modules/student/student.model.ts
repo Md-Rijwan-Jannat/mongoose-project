@@ -95,11 +95,6 @@ const studentSchema = new Schema<IStudent, TStudentModel, IStudentMethods>(
       required: true,
       unique: true,
     },
-    semesterId: {
-      type: Schema.Types.ObjectId,
-      required: true,
-      ref: "Semester",
-    },
     user: {
       type: Schema.Types.ObjectId,
       required: true,
@@ -132,7 +127,7 @@ const studentSchema = new Schema<IStudent, TStudentModel, IStudentMethods>(
       trim: true,
     },
     dateOfBirth: {
-      type: Date,
+      type: String,
       required: true,
       trim: true,
     },
@@ -172,6 +167,12 @@ const studentSchema = new Schema<IStudent, TStudentModel, IStudentMethods>(
       type: String,
       required: true,
     },
+
+    admissionSemester: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: "Semester",
+    },
     isDeleted: {
       type: Boolean,
       default: false,
@@ -209,6 +210,19 @@ studentSchema.pre("findOne", function (next) {
 
 studentSchema.pre("aggregate", function (next) {
   this.pipeline().unshift({ $match: { isDeleted: { $eq: false } } });
+
+  next();
+});
+
+// student validation
+studentSchema.pre("save", async function (next) {
+  const isExistStudent = await Student.findOne({
+    name: this.id,
+  });
+
+  if (isExistStudent) {
+    throw new Error("This student is already exists!");
+  }
 
   next();
 });

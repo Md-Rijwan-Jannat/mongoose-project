@@ -53,6 +53,18 @@ userSchema.pre("save", async function (next) {
   }
 });
 
+userSchema.pre("save", async function (next) {
+  const isExistUser = await User.findOne({
+    name: this.id,
+  });
+
+  if (isExistUser) {
+    throw new Error("This user is already exists!");
+  }
+
+  next();
+});
+
 // Post-save hook
 userSchema.post("save", function (doc, next) {
   doc.password = "";

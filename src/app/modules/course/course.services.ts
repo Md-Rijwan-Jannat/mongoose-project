@@ -21,9 +21,10 @@ const GetSingleCourseFromDB = async (_id: string) => {
 };
 
 const updateSingleCourseFromDB = async (_id: string) => {
-  const result = await Course.updateOne(
+  const result = await Course.findOneAndUpdate(
     { _id },
     { price: 5500, duration: "6 month" },
+    { new: true },
   );
   return result;
 };

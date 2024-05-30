@@ -24,10 +24,9 @@ export interface ILocalGuardian {
 
 export interface IStudent {
   id: string;
-  semesterId: Types.ObjectId;
   user: Types.ObjectId;
   name: IStudentName;
-  dateOfBirth: Date;
+  dateOfBirth: string;
   gender: "Male" | "Female";
   religion: "Islam" | "Hindu" | "Christian" | "Buddhist" | "Others";
   bloodGroup?: "A+" | "A-" | "B+" | "B-" | "AB+" | "AB-" | "O+" | "O-";
@@ -40,6 +39,7 @@ export interface IStudent {
   guardian: IGuardian;
   profileImage: string;
   academicDepartment: string;
+  admissionSemester: Types.ObjectId;
   isDeleted: boolean;
 }
 
