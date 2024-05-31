@@ -6,6 +6,8 @@ import {
   ILocalGuardian,
   IStudentModel,
 } from "./student.interface";
+import { AppError } from "../../middleware/errorHandler";
+import httpStatus from "http-status";
 
 // Student name schema
 const studentNameSchema = new Schema<IStudentName>({
@@ -163,10 +165,10 @@ const studentSchema = new Schema<IStudent, IStudentModel>(
       required: true,
     },
     academicDepartment: {
-      type: String,
+      type: Schema.Types.ObjectId,
       required: true,
+      ref: "AcademicDepartment",
     },
-
     admissionSemester: {
       type: Schema.Types.ObjectId,
       required: true,
@@ -207,18 +209,17 @@ studentSchema.pre("findOne", function (next) {
 
 studentSchema.pre("aggregate", function (next) {
   this.pipeline().unshift({ $match: { isDeleted: { $eq: false } } });
-
   next();
 });
 
 // Student can't be a duplicate
 studentSchema.pre("save", async function (next) {
   const isExistStudent = await Student.findOne({
-    name: this.id,
+    id: this.id,
   });
 
   if (isExistStudent) {
-    throw new Error("This student is already exists!");
+    throw new AppError(httpStatus.NOT_FOUND, "This student is already exists!");
   }
 
   next();
@@ -231,7 +232,7 @@ studentSchema.pre("findOneAndUpdate", async function (next) {
   const isExistingStudent = await Student.findOne(query);
 
   if (!isExistingStudent) {
-    throw new Error("This student doesn't exist!");
+    throw new AppError(httpStatus.NOT_FOUND, "This student doesn't exist!");
   }
 
   next();
@@ -243,7 +244,7 @@ studentSchema.static("findOneOrThrowError", async function (id: string) {
     id: id,
   });
   if (!Student) {
-    throw new Error("This student doesn't exist!");
+    throw new AppError(httpStatus.NOT_FOUND, "This student doesn't exist!");
   }
   return Student;
 });

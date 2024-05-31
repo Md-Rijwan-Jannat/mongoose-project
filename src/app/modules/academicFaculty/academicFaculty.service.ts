@@ -1,3 +1,5 @@
+import httpStatus from "http-status";
+import { AppError } from "../../middleware/errorHandler";
 import { IAcademicFaculty } from "./academicFaculty.interface";
 import { AcademicFaculty } from "./academicFaculty.model";
 
@@ -6,7 +8,10 @@ const createAcademicFacultyIntoDB = async (payload: IAcademicFaculty) => {
   const result = await AcademicFaculty.create(payload);
 
   if (!result) {
-    throw new Error("Failed to cerate academic faculty!");
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      "Failed to cerate academic faculty!",
+    );
   }
 
   return result;
@@ -17,7 +22,10 @@ const getAllAcademicFacultyFromDB = async () => {
   const result = await AcademicFaculty.find();
 
   if (!result) {
-    throw new Error("Failed to retrieved academic faculties!");
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      "Failed to retrieved academic faculties!",
+    );
   }
   return result;
 };
@@ -26,7 +34,10 @@ const getAllAcademicFacultyFromDB = async () => {
 const getSingleAcademicFacultyFromDB = async (_id: string) => {
   const result = await AcademicFaculty.findOne({ _id });
   if (!result) {
-    throw new Error("Failed to retrieved academic faculty!");
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      "Failed to retrieved academic faculty!",
+    );
   }
   return result;
 };
@@ -40,7 +51,10 @@ const updateSingleAcademicFacultyFromDB = async (
     new: true,
   });
   if (!result) {
-    throw new Error("Failed to update academic faculty!");
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      "Failed to update academic faculty!",
+    );
   }
   return result;
 };

@@ -1,13 +1,14 @@
+import httpStatus from "http-status";
+import { AppError } from "../../middleware/errorHandler";
 import { ICourse } from "./course.interface";
 import { Course } from "./course.model";
 
 const CreateCourseIntoDB = async (courseData: ICourse) => {
   if (await Course.isUserExists(courseData.id)) {
-    throw new Error("User already exists");
-  } else {
-    const result = await Course.create(courseData);
-    return result;
+    throw new AppError(httpStatus.NOT_FOUND, "User already exists");
   }
+  const result = await Course.create(courseData);
+  return result;
 };
 
 const GetAllCourseFromDB = async () => {

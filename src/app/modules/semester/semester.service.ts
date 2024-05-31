@@ -1,3 +1,5 @@
+import httpStatus from "http-status";
+import { AppError } from "../../middleware/errorHandler";
 import { semesterCodeMapper } from "./semester.constants";
 import { ISemester } from "./semester.interface";
 import { Semester } from "./semester.model";
@@ -5,7 +7,7 @@ import { Semester } from "./semester.model";
 // Semester create service
 const createSemesterIntoDB = async (payload: ISemester) => {
   if (semesterCodeMapper[payload.name] !== payload.code) {
-    throw new Error("Invalid semester code!");
+    throw new AppError(httpStatus.NOT_FOUND, "Invalid semester code!");
   }
 
   const result = await Semester.create(payload);
@@ -15,22 +17,12 @@ const createSemesterIntoDB = async (payload: ISemester) => {
 // get all semester service
 const getAllSemesterFromDB = async () => {
   const result = await Semester.find();
-
-  if (!result) {
-    throw new Error("No semesters found!");
-  }
-
   return result;
 };
 
 // get single semester service
 const getSingleSemesterFromDB = async (_id: string) => {
   const result = await Semester.findOne({ _id });
-
-  if (!result) {
-    throw new Error("No semester found!");
-  }
-
   return result;
 };
 
@@ -44,16 +36,11 @@ const updateSingleSemesterFromDB = async (
     payload.code &&
     semesterCodeMapper[payload.name] !== payload.code
   ) {
-    throw new Error("Invalid semester code!");
+    throw new AppError(httpStatus.NOT_FOUND, "Invalid semester code!");
   }
   const result = await Semester.findOneAndUpdate({ _id }, payload, {
     new: true,
   });
-
-  if (!result) {
-    throw new Error("No semester found!");
-  }
-
   return result;
 };
 

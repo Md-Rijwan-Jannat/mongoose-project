@@ -1,22 +1,15 @@
+import httpStatus from "http-status";
+import { AppError } from "../../middleware/errorHandler";
 import { IInstructor } from "./instructor.interface";
 import { Instructor } from "./instructor.model";
 
 // Create instructor
 const createInstructorIntoDB = async (instructorData: IInstructor) => {
   if (await Instructor.isExistingInstructor(instructorData.id)) {
-    throw new Error("Instructor already exists");
-  } else {
-    const result = await Instructor.create(instructorData);
-    return result;
+    throw new AppError(httpStatus.NOT_FOUND, "Instructor already exists");
   }
-
-  // create custom a instance methods
-
-  //   const student = new Instructor(instructorData);
-  //   if (await student.isUserExists(instructorData.id)) {
-  //     throw new Error('User already exists');
-  //   }
-  // const result = student.save();
+  const result = await Instructor.create(instructorData);
+  return result;
 };
 
 // Get all instructor
