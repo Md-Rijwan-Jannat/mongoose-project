@@ -2,6 +2,7 @@ import { NextFunction, Request, RequestHandler, Response } from "express";
 import { StudentServices } from "./student.services";
 import sendResponse from "../../utils/sendResponse";
 import httpStatus from "http-status";
+import { Student } from "./student.model";
 
 const catchAsync = (fn: RequestHandler) => {
   return (req: Request, res: Response, next: NextFunction) => {
@@ -23,28 +24,30 @@ const grtAllStudents = catchAsync(async (req, res) => {
 
 // Get single student
 const getSingleStudent = catchAsync(async (req, res) => {
-  const { _id } = req.query;
-  const result = await StudentServices.getSingleStudentFromDB(_id as string);
-
+  const { studentId } = req.params;
+  const student = await Student.findOneOrThrowError(studentId as string);
+  const result = await StudentServices.getSingleStudentFromDB(
+    student.id as string,
+  );
   sendResponse(res, {
-    success: true,
     statusCode: httpStatus.OK,
-    message: "Student is retrieved successfully",
+    success: true,
+    message: "Student is retrieved successfully!",
     data: result,
   });
 });
 
+// Delete student controller
 const deleteStudent = catchAsync(async (req, res) => {
-  const { _id } = req.query;
-  const result = await StudentServices.deleteStudentFromDB(_id as string);
+  const { studentId } = req.params;
+  const result = await StudentServices.deleteStudentFromDB(studentId as string);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Student is deleted",
+    message: "Student is deleted!",
     data: result,
   });
 });
-
 export const StudentControllers = {
   grtAllStudents,
   getSingleStudent,

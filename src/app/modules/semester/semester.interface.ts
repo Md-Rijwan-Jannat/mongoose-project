@@ -1,3 +1,6 @@
+/* eslint-disable no-unused-vars */
+import { Model } from "mongoose";
+
 export type TMonths =
   | "January"
   | "February"
@@ -21,10 +24,15 @@ export interface ISemesterCodeMapper {
 }
 
 export interface ISemester {
+  _id: string;
   name: TSemesterName;
   year: string;
   code: TSemesterCode;
   startMonth: TMonths;
   endMonth: TMonths;
   isDeleted: boolean;
+}
+
+export interface ISemesterModel extends Model<ISemester> {
+  findOneOrThrowError: (id: string) => Promise<ISemester>;
 }

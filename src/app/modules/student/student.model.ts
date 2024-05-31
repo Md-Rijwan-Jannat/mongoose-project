@@ -4,8 +4,7 @@ import {
   IStudentName,
   IGuardian,
   ILocalGuardian,
-  TStudentModel,
-  IStudentMethods,
+  IStudentModel,
 } from "./student.interface";
 
 // Student name schema
@@ -88,7 +87,7 @@ const localGuardianSchema = new Schema<ILocalGuardian>({
 });
 
 // Student main schema
-const studentSchema = new Schema<IStudent, TStudentModel, IStudentMethods>(
+const studentSchema = new Schema<IStudent, IStudentModel>(
   {
     id: {
       type: String,
@@ -197,7 +196,6 @@ studentSchema.virtual("fullName").get(function () {
 
 // Pre-find hooks
 studentSchema.pre("find", function (next) {
-  console.log("Pre-find hook triggered for find");
   this.find({ isDeleted: { $eq: false } });
   next();
 });
@@ -205,7 +203,6 @@ studentSchema.pre("find", function (next) {
 studentSchema.pre("findOne", function (next) {
   this.findOne({ isDeleted: { $eq: false } });
   next();
-  console.log("Pre-findOne hook triggered for find");
 });
 
 studentSchema.pre("aggregate", function (next) {
@@ -214,7 +211,7 @@ studentSchema.pre("aggregate", function (next) {
   next();
 });
 
-// student validation
+// Student can't be a duplicate
 studentSchema.pre("save", async function (next) {
   const isExistStudent = await Student.findOne({
     name: this.id,
@@ -227,13 +224,31 @@ studentSchema.pre("save", async function (next) {
   next();
 });
 
-// Method to check if user exists
-studentSchema.methods.isUserExists = async function (id: string) {
-  const existingStudent = await Student.findOne({ id });
-  return existingStudent;
-};
+// Unknown _id validation error for update
+studentSchema.pre("findOneAndUpdate", async function (next) {
+  const query = this.getQuery();
 
-export const Student: TStudentModel = model<IStudent, TStudentModel>(
+  const isExistingStudent = await Student.findOne(query);
+
+  if (!isExistingStudent) {
+    throw new Error("This student doesn't exist!");
+  }
+
+  next();
+});
+
+// Custom static method to check existence
+studentSchema.static("findOneOrThrowError", async function (id: string) {
+  const Student: IStudent | null = await this.findOne({
+    id: id,
+  });
+  if (!Student) {
+    throw new Error("This student doesn't exist!");
+  }
+  return Student;
+});
+
+export const Student: IStudentModel = model<IStudent, IStudentModel>(
   "Student",
   studentSchema,
 );
