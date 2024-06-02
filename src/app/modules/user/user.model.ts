@@ -2,7 +2,7 @@ import { Schema, model } from "mongoose";
 import { IUser } from "./user.interface";
 import config from "../../config";
 import bcrypt from "bcrypt";
-import { AppError } from "../../middleware/errorHandler";
+import { ThrowError } from "../../error/throwError";
 import httpStatus from "http-status";
 
 export const userSchema = new Schema<IUser>(
@@ -61,7 +61,7 @@ userSchema.pre("save", async function (next) {
   });
 
   if (isExistUser) {
-    throw new AppError(httpStatus.NOT_FOUND, "This user is already exists!");
+    throw new ThrowError(httpStatus.NOT_FOUND, "This user is already exists!");
   }
 
   next();

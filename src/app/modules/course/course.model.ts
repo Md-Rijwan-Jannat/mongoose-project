@@ -8,7 +8,7 @@ import {
   ISchedule,
 } from "./course.interface";
 import config from "../../config";
-import { AppError } from "../../middleware/errorHandler";
+import { ThrowError } from "../../error/throwError";
 import httpStatus from "http-status";
 
 // Define the Instructor schema
@@ -181,7 +181,7 @@ courseSchema.pre("save", async function () {
       Number(config.password_salt_rounds),
     );
   } catch (error: any) {
-    throw new AppError(httpStatus.NOT_FOUND, `${error.message}`);
+    throw new ThrowError(httpStatus.NOT_FOUND, `${error.message}`);
   }
 });
 

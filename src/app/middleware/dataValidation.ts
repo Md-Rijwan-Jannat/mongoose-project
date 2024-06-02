@@ -13,4 +13,4 @@ const dataValidation = (schema: AnyZodObject) => {
     }
   };
 };
-export const Validation = dataValidation;
+export const RequestValidation = dataValidation;

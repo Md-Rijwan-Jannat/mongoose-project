@@ -1,5 +1,5 @@
 import httpStatus from "http-status";
-import { AppError } from "../../middleware/errorHandler";
+import { ThrowError } from "../../error/throwError";
 import { semesterCodeMapper } from "./semester.constants";
 import { ISemester } from "./semester.interface";
 import { Semester } from "./semester.model";
@@ -7,7 +7,7 @@ import { Semester } from "./semester.model";
 // Semester create service
 const createSemesterIntoDB = async (payload: ISemester) => {
   if (semesterCodeMapper[payload.name] !== payload.code) {
-    throw new AppError(httpStatus.NOT_FOUND, "Invalid semester code!");
+    throw new ThrowError(httpStatus.NOT_FOUND, "Invalid semester code!");
   }
 
   const result = await Semester.create(payload);
@@ -36,7 +36,7 @@ const updateSingleSemesterFromDB = async (
     payload.code &&
     semesterCodeMapper[payload.name] !== payload.code
   ) {
-    throw new AppError(httpStatus.NOT_FOUND, "Invalid semester code!");
+    throw new ThrowError(httpStatus.NOT_FOUND, "Invalid semester code!");
   }
   const result = await Semester.findOneAndUpdate({ _id }, payload, {
     new: true,

@@ -2,7 +2,7 @@ import { Schema, model } from "mongoose";
 import { ISemester, ISemesterModel } from "./semester.interface";
 import { months, semesterCode, semesterName } from "./semester.constants";
 import httpStatus from "http-status";
-import { AppError } from "../../middleware/errorHandler";
+import { ThrowError } from "../../error/throwError";
 
 export const semesterSchema = new Schema<ISemester, ISemesterModel>(
   {
@@ -48,10 +48,22 @@ semesterSchema.pre("save", async function (next) {
   });
 
   if (isExistSemester) {
-    throw new AppError(
+    throw new ThrowError(
       httpStatus.NOT_FOUND,
       "This semester is already exists!",
     );
+  }
+
+  next();
+});
+
+//  Unknown _id validation error
+semesterSchema.pre("find", async function (next) {
+  const query = this.getQuery();
+  const isExistSemester = await Semester.findOne(query);
+
+  if (!isExistSemester) {
+    throw new ThrowError(httpStatus.NOT_FOUND, "This semester doesn't exists!");
   }
 
   next();
@@ -64,7 +76,7 @@ semesterSchema.pre("findOneAndUpdate", async function (next) {
   const isExistingSemester = await Semester.findOne(query);
 
   if (!isExistingSemester) {
-    throw new AppError(httpStatus.NOT_FOUND, "This semester doesn't exist!");
+    throw new ThrowError(httpStatus.NOT_FOUND, "This semester doesn't exist!");
   }
 
   next();
@@ -76,7 +88,7 @@ semesterSchema.static("findOneOrThrowError", async function (id: string) {
     _id: id,
   });
   if (!Semester) {
-    throw new AppError(httpStatus.NOT_FOUND, "This semester doesn't exist!");
+    throw new ThrowError(httpStatus.NOT_FOUND, "This semester doesn't exist!");
   }
   return Semester;
 });

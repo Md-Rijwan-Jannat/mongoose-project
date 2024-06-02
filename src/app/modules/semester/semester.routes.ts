@@ -1,13 +1,13 @@
 import { Router } from "express";
 import { SemesterController } from "./semester.controller";
-import { Validation } from "../../middleware/dataValidation";
+import { RequestValidation } from "../../middleware/dataValidation";
 import { SemesterValidation } from "./semester.validation";
 
 const router = Router();
 
 router.post(
   "/create-semester",
-  Validation(SemesterValidation.createSemesterValidationSchema),
+  RequestValidation(SemesterValidation.createSemesterValidationSchema),
   SemesterController.createSemester,
 );
 
@@ -17,7 +17,7 @@ router.get("/:semesterId", SemesterController.getSingleSemester);
 
 router.patch(
   "/:semesterId",
-  Validation(SemesterValidation.updateSemesterValidationSchema),
+  RequestValidation(SemesterValidation.updateSemesterValidationSchema),
   SemesterController.updateSingleSemester,
 );
 

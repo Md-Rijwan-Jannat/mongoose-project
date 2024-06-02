@@ -105,6 +105,11 @@ const createStudentValidationSchema = z.object({
   }),
 });
 
+const updateStudentValidationSchema = z.object({
+  body: createStudentValidationSchema.partial(),
+});
+
 export const studentValidations = {
   createStudentValidationSchema,
+  updateStudentValidationSchema,
 };

@@ -6,7 +6,7 @@ import {
   ILocalGuardian,
   IStudentModel,
 } from "./student.interface";
-import { AppError } from "../../middleware/errorHandler";
+import { ThrowError } from "../../error/throwError";
 import httpStatus from "http-status";
 
 // Student name schema
@@ -172,7 +172,7 @@ const studentSchema = new Schema<IStudent, IStudentModel>(
     admissionSemester: {
       type: Schema.Types.ObjectId,
       required: true,
-      ref: "Semester",
+      ref: "Student",
     },
     isDeleted: {
       type: Boolean,
@@ -219,7 +219,22 @@ studentSchema.pre("save", async function (next) {
   });
 
   if (isExistStudent) {
-    throw new AppError(httpStatus.NOT_FOUND, "This student is already exists!");
+    throw new ThrowError(
+      httpStatus.NOT_FOUND,
+      "This student is already exists!",
+    );
+  }
+
+  next();
+});
+
+//  Unknown _id validation error
+studentSchema.pre("find", async function (next) {
+  const query = this.getQuery();
+  const isExistStudent = await Student.findOne(query);
+
+  if (!isExistStudent) {
+    throw new ThrowError(httpStatus.NOT_FOUND, "This student doesn't exists!");
   }
 
   next();
@@ -232,7 +247,7 @@ studentSchema.pre("findOneAndUpdate", async function (next) {
   const isExistingStudent = await Student.findOne(query);
 
   if (!isExistingStudent) {
-    throw new AppError(httpStatus.NOT_FOUND, "This student doesn't exist!");
+    throw new ThrowError(httpStatus.NOT_FOUND, "This student doesn't exist!");
   }
 
   next();
@@ -244,7 +259,7 @@ studentSchema.static("findOneOrThrowError", async function (id: string) {
     id: id,
   });
   if (!Student) {
-    throw new AppError(httpStatus.NOT_FOUND, "This student doesn't exist!");
+    throw new ThrowError(httpStatus.NOT_FOUND, "This student doesn't exist!");
   }
   return Student;
 });

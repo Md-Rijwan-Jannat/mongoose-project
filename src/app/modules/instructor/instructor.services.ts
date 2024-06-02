@@ -1,12 +1,12 @@
 import httpStatus from "http-status";
-import { AppError } from "../../middleware/errorHandler";
+import { ThrowError } from "../../error/throwError";
 import { IInstructor } from "./instructor.interface";
 import { Instructor } from "./instructor.model";
 
 // Create instructor
 const createInstructorIntoDB = async (instructorData: IInstructor) => {
   if (await Instructor.isExistingInstructor(instructorData.id)) {
-    throw new AppError(httpStatus.NOT_FOUND, "Instructor already exists");
+    throw new ThrowError(httpStatus.NOT_FOUND, "Instructor already exists");
   }
   const result = await Instructor.create(instructorData);
   return result;

@@ -1,11 +1,11 @@
 import httpStatus from "http-status";
-import { AppError } from "../../middleware/errorHandler";
+import { ThrowError } from "../../error/throwError";
 import { ICourse } from "./course.interface";
 import { Course } from "./course.model";
 
 const CreateCourseIntoDB = async (courseData: ICourse) => {
   if (await Course.isUserExists(courseData.id)) {
-    throw new AppError(httpStatus.NOT_FOUND, "User already exists");
+    throw new ThrowError(httpStatus.NOT_FOUND, "User already exists");
   }
   const result = await Course.create(courseData);
   return result;

@@ -1,14 +1,14 @@
 import httpStatus from "http-status";
 import { IAcademicDepartment } from "./academicDepartment.interface";
 import { AcademicDepartment } from "./academicDepartment.model";
-import { AppError } from "../../middleware/errorHandler";
+import { ThrowError } from "../../error/throwError";
 
 // Create academic department service
 const createAcademicDepartmentIntoDB = async (payload: IAcademicDepartment) => {
   const result = await AcademicDepartment.create(payload);
 
   if (!result) {
-    throw new AppError(
+    throw new ThrowError(
       httpStatus.NOT_FOUND,
       "Failed to cerate academic department!",
     );
@@ -22,7 +22,7 @@ const getAllAcademicDepartmentFromDB = async () => {
   const result = await AcademicDepartment.find().populate("academicFaculty");
 
   if (!result) {
-    throw new AppError(
+    throw new ThrowError(
       httpStatus.NOT_FOUND,
       "Failed to retrieved academic departments!",
     );
@@ -36,7 +36,7 @@ const getSingleAcademicDepartmentFromDB = async (_id: string) => {
     "academicFaculty",
   );
   if (!result) {
-    throw new AppError(
+    throw new ThrowError(
       httpStatus.NOT_FOUND,
       "Failed to retrieved academic department!",
     );
@@ -53,7 +53,7 @@ const updateSingleAcademicDepartmentFromDB = async (
     new: true,
   });
   if (!result) {
-    throw new AppError(
+    throw new ThrowError(
       httpStatus.NOT_FOUND,
       "Failed to update academic department!",
     );
