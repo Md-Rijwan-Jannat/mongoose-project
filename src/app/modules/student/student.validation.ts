@@ -1,115 +1,113 @@
 import { z } from "zod";
 
-// Define the Zod validation schema for the name structure
-const studentNameSchema = z.object({
+//  password schema
+const passwordSchema = z
+  .string({
+    invalid_type_error: "Password must be string",
+  })
+  .min(8)
+  .regex(
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+    "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
+  )
+  .optional();
+
+const createUserNameValidationSchema = z.object({
   firstName: z
     .string()
-    .regex(/^[A-Z][a-z]*$/, "First name must start with an uppercase letter.")
-    .max(10, "First name max length is 10 characters.")
-    .trim()
-    .describe("First name is required."),
-  middleName: z
-    .string()
-    .regex(/^[A-Z][a-z]*$/, "Middle name must start with an uppercase letter.")
-    .max(10, "Middle name max length is 10 characters.")
-    .trim()
-    .optional(),
-  lastName: z
-    .string()
-    .regex(/^[A-Z][a-z]*$/, "Last name must start with an uppercase letter.")
-    .max(10, "Last name max length is 10 characters.")
-    .trim()
-    .describe("Last name is required."),
+    .min(1)
+    .max(20)
+    .refine((value) => /^[A-Z]/.test(value), {
+      message: "First Name must start with a capital letter",
+    }),
+  middleName: z.string(),
+  lastName: z.string(),
 });
 
-// Define the Zod validation schema for the guardian structure
-const guardianValidationSchema = z.object({
-  fatherName: z.string().trim().describe("Father's name is required"),
-  fatherContactNo: z
-    .string()
-    .trim()
-    .describe("Father's contact number is required"),
-  fatherOccupation: z
-    .string()
-    .trim()
-    .describe("Father's occupation is required"),
-  motherName: z.string().trim().describe("Mother's name is required"),
-  motherContactNo: z
-    .string()
-    .trim()
-    .describe("Mother's contact number is required"),
-  motherOccupation: z
-    .string()
-    .trim()
-    .describe("Mother's occupation is required"),
+const createGuardianValidationSchema = z.object({
+  fatherName: z.string(),
+  fatherOccupation: z.string(),
+  fatherContactNo: z.string(),
+  motherName: z.string(),
+  motherOccupation: z.string(),
+  motherContactNo: z.string(),
 });
 
-// Define the Zod validation schema for the local guardian structure
-const localGuardianValidationSchema = z.object({
-  name: z.string().trim().describe("Local guardian's name is required"),
-  contactNo: z
-    .string()
-    .trim()
-    .describe("Local guardian's contact number is required"),
-  address: z.string().trim().describe("Local guardian's address is required"),
-  email: z
-    .string()
-    .email("Local guardian's email must be a valid email")
-    .trim()
-    .describe("Local guardian's email is required"),
+const createLocalGuardianValidationSchema = z.object({
+  name: z.string(),
+  occupation: z.string(),
+  contactNo: z.string(),
+  address: z.string(),
 });
 
-// Define the main Zod validation schema for the student
-const createStudentValidationSchema = z.object({
+export const createStudentValidationSchema = z.object({
   body: z.object({
-    password: z
-      .string()
-      .min(8, "Password must be at least 8 characters long")
-      .regex(
-        /^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*])/,
-        "Password must contain at least one letter, one number, and one special character",
-      )
-      .trim()
-      .describe("Password is required"),
+    password: passwordSchema,
     student: z.object({
-      name: studentNameSchema.describe("Student name is required"),
-      gender: z.enum(["Male", "Female"]).describe("Gender is required"),
-      religion: z
-        .enum(["Islam", "Hindu", "Christian", "Buddhist", "Others"])
-        .describe("Religion is required"),
-      bloodGroup: z
-        .enum(["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"])
-        .optional(),
-      email: z
-        .string()
-        .email("Email must be a valid email")
-        .trim()
-        .describe("Email is required"),
-      dateOfBirth: z.string().trim().describe("Date of birth is required"),
-      contactNo: z.string().trim().describe("Contact number is required"),
-      emergencyContactNo: z
-        .string()
-        .trim()
-        .describe("Emergency contact number is required"),
-      presentAddress: z.string().trim().describe("Current address is required"),
-      permanentAddress: z
-        .string()
-        .trim()
-        .describe("Permanent address is required"),
-      localGuardian: localGuardianValidationSchema.describe(
-        "Local guardian is required",
-      ),
-      guardian: guardianValidationSchema.describe("Guardian is required"),
-      profileImage: z.string().trim().describe("Student avatar is required"),
+      name: createUserNameValidationSchema,
+      gender: z.enum(["male", "female", "other"]),
+      dateOfBirth: z.string().optional(),
+      email: z.string().email(),
+      contactNo: z.string(),
+      emergencyContactNo: z.string(),
+      bloodGroup: z.enum(["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"]),
+      presentAddress: z.string(),
+      permanentAddress: z.string(),
+      guardian: createGuardianValidationSchema,
+      localGuardian: createLocalGuardianValidationSchema,
+      admissionSemester: z.string(),
+      profileImg: z.string(),
+      academicDepartment: z.string(),
     }),
   }),
 });
 
-const updateStudentValidationSchema = z.object({
-  body: createStudentValidationSchema.partial(),
+const updateUserNameValidationSchema = z.object({
+  firstName: z.string().min(1).max(20).optional(),
+  middleName: z.string().optional(),
+  lastName: z.string().optional(),
 });
 
-export const studentValidations = {
+const updateGuardianValidationSchema = z.object({
+  fatherName: z.string().optional(),
+  fatherOccupation: z.string().optional(),
+  fatherContactNo: z.string().optional(),
+  motherName: z.string().optional(),
+  motherOccupation: z.string().optional(),
+  motherContactNo: z.string().optional(),
+});
+
+const updateLocalGuardianValidationSchema = z.object({
+  name: z.string().optional(),
+  occupation: z.string().optional(),
+  contactNo: z.string().optional(),
+  address: z.string().optional(),
+});
+
+export const updateStudentValidationSchema = z.object({
+  body: z.object({
+    student: z.object({
+      name: updateUserNameValidationSchema,
+      gender: z.enum(["male", "female", "other"]).optional(),
+      dateOfBirth: z.string().optional(),
+      email: z.string().email().optional(),
+      contactNo: z.string().optional(),
+      emergencyContactNo: z.string().optional(),
+      bloodGroup: z
+        .enum(["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"])
+        .optional(),
+      presentAddress: z.string().optional(),
+      permanentAddress: z.string().optional(),
+      guardian: updateGuardianValidationSchema.optional(),
+      localGuardian: updateLocalGuardianValidationSchema.optional(),
+      admissionSemester: z.string().optional(),
+      profileImg: z.string().optional(),
+      academicDepartment: z.string().optional(),
+    }),
+  }),
+});
+
+export const StudentValidations = {
   createStudentValidationSchema,
   updateStudentValidationSchema,
 };

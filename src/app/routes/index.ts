@@ -1,13 +1,13 @@
-import { Router } from "express";
+import express from "express";
+
 import { UserRoutes } from "../modules/user/user.routes";
-import { StudentRoutes } from "../modules/student/student.routes";
-import { courseRoutes as CourseRoutes } from "../modules/course/course.routes";
-import { InstructorRoutes } from "../modules/instructor/instructor.routes";
-import { SemesterRoutes } from "../modules/semester/semester.routes";
+import { SemesterRoutes } from "../modules/academicSemester/academicSemester.routes";
 import { AcademicFacultyRoutes } from "../modules/academicFaculty/academicFaculty.routes";
 import { AcademicDepartmentRoutes } from "../modules/academicDepartment/academicDepartment.routes";
-
-const router = Router();
+import { StudentRoutes } from "../modules/student/student.routes";
+import { FacultyRoutes } from "../modules/Faculty/faculty.routes";
+import { AdminRoutes } from "../modules/Admin/admin.routes";
+const router = express.Router();
 
 const routeModel = [
   {
@@ -19,8 +19,12 @@ const routeModel = [
     routeFile: StudentRoutes,
   },
   {
-    path: "/semesters",
-    routeFile: SemesterRoutes,
+    path: "/faculties",
+    routeFile: FacultyRoutes,
+  },
+  {
+    path: "/admins",
+    routeFile: AdminRoutes,
   },
   {
     path: "/academic-faculties",
@@ -31,16 +35,14 @@ const routeModel = [
     routeFile: AcademicDepartmentRoutes,
   },
   {
-    path: "/course",
-    routeFile: CourseRoutes,
-  },
-  {
-    path: "/instructors",
-    routeFile: InstructorRoutes,
+    path: "/semesters",
+    routeFile: SemesterRoutes,
   },
 ];
 
-// all route loop is here
-routeModel.forEach((route) => router.use(route.path, route.routeFile));
+// Check each route file and ensure it's not undefined
+routeModel.forEach((route) => {
+  router.use(route.path, route.routeFile);
+});
 
 export default router;

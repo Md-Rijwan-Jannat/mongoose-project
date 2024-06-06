@@ -1,9 +1,9 @@
-import { Router } from "express";
+import express from "express";
 import { AcademicFacultyControllers } from "./academicFaculty.controller";
-import { RequestValidation } from "../../middleware/dataValidation";
+import { RequestValidation } from "../../middleware/validateRequest";
 import { AcademicFacultyValidation } from "./academicFaculty.validation";
 
-const router = Router();
+const router = express.Router();
 
 router.post(
   "/create-academic-faculty",

@@ -3,7 +3,7 @@ import {
   IAcademicFaculty,
   IAcademicFacultyModel,
 } from "./academicFaculty.interface";
-import { ThrowError } from "../../error/throwError";
+import AppError from "../../error/AppError";
 import httpStatus from "http-status";
 
 export const academicFacultySchema = new Schema<
@@ -34,10 +34,7 @@ academicFacultySchema.pre("save", async function (next) {
   });
 
   if (isExistFaculty) {
-    throw new ThrowError(
-      httpStatus.NOT_FOUND,
-      "This faculty is already exists!",
-    );
+    throw new AppError(httpStatus.NOT_FOUND, "This faculty is already exists!");
   }
 
   next();
@@ -49,7 +46,7 @@ academicFacultySchema.pre("find", async function (next) {
   const isExistFaculty = await AcademicFaculty.findOne(query);
 
   if (!isExistFaculty) {
-    throw new ThrowError(httpStatus.NOT_FOUND, "This faculty doesn't exists!");
+    throw new AppError(httpStatus.NOT_FOUND, "This faculty doesn't exists!");
   }
 
   next();
@@ -62,7 +59,7 @@ academicFacultySchema.pre("findOneAndUpdate", async function (next) {
   const isExistingFaculty = await AcademicFaculty.findOne(query);
 
   if (!isExistingFaculty) {
-    throw new ThrowError(httpStatus.NOT_FOUND, "This faculty doesn't exist!");
+    throw new AppError(httpStatus.NOT_FOUND, "This faculty doesn't exist!");
   }
 
   next();
@@ -76,7 +73,7 @@ academicFacultySchema.static(
       _id: id,
     });
     if (!Faculty) {
-      throw new ThrowError(httpStatus.NOT_FOUND, "This faculty doesn't exist!");
+      throw new AppError(httpStatus.NOT_FOUND, "This faculty doesn't exist!");
     }
     return Faculty;
   },

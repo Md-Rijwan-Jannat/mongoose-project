@@ -1,49 +1,50 @@
 /* eslint-disable no-unused-vars */
 import { Model, Types } from "mongoose";
 
-export interface IStudentName {
+export type TUserName = {
   firstName: string;
-  middleName?: string;
+  middleName: string;
   lastName: string;
-}
+};
 
-export interface IGuardian {
+export type TGuardian = {
   fatherName: string;
-  fatherContactNo: string;
   fatherOccupation: string;
+  fatherContactNo: string;
   motherName: string;
-  motherContactNo: string;
   motherOccupation: string;
-}
+  motherContactNo: string;
+};
 
-export interface ILocalGuardian {
+export type TLocalGuardian = {
   name: string;
+  occupation: string;
   contactNo: string;
   address: string;
-  email: string;
-}
+};
 
-export interface IStudent {
+export type TStudent = {
   id: string;
   user: Types.ObjectId;
-  name: IStudentName;
-  dateOfBirth: string;
-  gender: "Male" | "Female";
-  religion: "Islam" | "Hindu" | "Christian" | "Buddhist" | "Others";
-  bloodGroup?: "A+" | "A-" | "B+" | "B-" | "AB+" | "AB-" | "O+" | "O-";
+  name: TUserName;
+  gender: "male" | "female" | "other";
+  dateOfBirth?: Date;
   email: string;
   contactNo: string;
   emergencyContactNo: string;
+  bloodGroup?: "A+" | "A-" | "B+" | "B-" | "AB+" | "AB-" | "O+" | "O-";
   presentAddress: string;
   permanentAddress: string;
-  localGuardian: ILocalGuardian;
-  guardian: IGuardian;
-  profileImage: string;
-  academicDepartment: Types.ObjectId;
+  guardian: TGuardian;
+  localGuardian: TLocalGuardian;
+  profileImg?: string;
   admissionSemester: Types.ObjectId;
+  academicDepartment: Types.ObjectId;
   isDeleted: boolean;
-}
+};
 
-export interface IStudentModel extends Model<IStudent> {
-  findOneOrThrowError: (id: string) => Promise<IStudent>;
+//for creating static
+
+export interface StudentModel extends Model<TStudent> {
+  isUserExists(id: string): Promise<TStudent | null>;
 }

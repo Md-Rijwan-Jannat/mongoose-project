@@ -1,24 +1,26 @@
-import { TErrorSource, TGenericResponseError } from "../interface/error";
+import { TErrorSources, TGenericResponseError } from "../interface/error";
 
-const handleDuplicateFiledError = (err: any): TGenericResponseError => {
-  const regex = /dup key: \{ name: "([^"]+)" \}/;
+const handleDuplicateError = (err: any): TGenericResponseError => {
+  // Extract value within double quotes using regex
+  const match = err.message.match(/"([^"]*)"/);
 
-  const match = err?.message.match(regex);
+  // The extracted value will be in the first capturing group
+  const extractedMessage = match && match[1];
 
-  const duplicateMessage = match[1];
-
-  const errorSources: TErrorSource = [
+  const errorSources: TErrorSources = [
     {
       path: "",
-      message: `${duplicateMessage} is already exists`,
+      message: `${extractedMessage} is already exists`,
     },
   ];
+
   const statusCode = 400;
+
   return {
     statusCode,
-    message: "Duplicate filed",
-    errorSources: errorSources,
+    message: "Invalid ID",
+    errorSources,
   };
 };
 
-export const HandleDuplicateFiledError = handleDuplicateFiledError;
+export const HandleDuplicateFiledError = handleDuplicateError;

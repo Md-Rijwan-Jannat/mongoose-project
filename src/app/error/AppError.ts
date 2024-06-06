@@ -14,4 +14,4 @@ class AppError extends Error {
   }
 }
 
-export const ThrowError = AppError;
+export default AppError;

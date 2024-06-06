@@ -1,0 +1,70 @@
+import { z } from "zod";
+
+const AdminNameSchema = z.object({
+  firstName: z
+    .string()
+    .min(1, { message: "First name must not be empty" })
+    .trim(),
+  middleName: z.string().optional(),
+  lastName: z
+    .string()
+    .min(1, { message: "Last name must not be empty" })
+    .trim(),
+});
+
+const createAdminSchemaValidation = z.object({
+  body: z.object({
+    password: z.string(),
+    admin: z.object({
+      name: AdminNameSchema,
+      gender: z
+        .enum(["male", "female"])
+        .or(
+          z.string({ invalid_type_error: "Gender must be 'male' or 'female'" }),
+        ),
+      religion: z
+        .enum(["Islam", "Hindu", "Christian", "Buddhist", "Others"])
+        .or(z.string({ invalid_type_error: "Invalid religion" })),
+      bloodGroup: z
+        .enum(["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"])
+        .or(z.string({ invalid_type_error: "Invalid blood group" })),
+      email: z
+        .string({
+          required_error: "Email is required",
+          invalid_type_error: "Invalid email format",
+        })
+        .email()
+        .min(1, { message: "Email must not be empty" }),
+      contactNo: z
+        .string({ required_error: "Contact number is required" })
+        .min(1, { message: "Contact number must not be empty" }),
+      emergencyNo: z
+        .string({ required_error: "Emergency contact number is required" })
+        .min(1, { message: "Emergency contact number must not be empty" }),
+      dateOfBirth: z
+        .string({ required_error: "Date of birth is required" })
+        .min(1, { message: "Date of birth must not be empty" }),
+      occupation: z
+        .string({ required_error: "Occupation is required" })
+        .min(1, { message: "Occupation must not be empty" }),
+      presentAddress: z
+        .string({ required_error: "Present address is required" })
+        .min(1, { message: "Present address must not be empty" }),
+      permanentAddress: z
+        .string({ required_error: "Permanent address is required" })
+        .min(1, { message: "Permanent address must not be empty" }),
+      profileImg: z
+        .string({ required_error: "Profile image is required" })
+        .min(1, { message: "Profile image must not be empty" }),
+    }),
+  }),
+});
+
+const updateAdminSchemaValidation = z.object({
+  body: createAdminSchemaValidation.partial(),
+});
+
+export const AdminValidation = {
+  createAdminSchemaValidation,
+  updateAdminSchemaValidation,
+};

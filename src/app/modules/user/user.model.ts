@@ -2,8 +2,8 @@ import { Schema, model } from "mongoose";
 import { IUser } from "./user.interface";
 import config from "../../config";
 import bcrypt from "bcrypt";
-import { ThrowError } from "../../error/throwError";
 import httpStatus from "http-status";
+import AppError from "../../error/AppError";
 
 export const userSchema = new Schema<IUser>(
   {
@@ -46,7 +46,7 @@ userSchema.pre("save", async function (next) {
   try {
     if (this.isModified("password")) {
       const password = this.password;
-      const saltRounds = Number(config.password_salt_rounds);
+      const saltRounds = Number(config.bcrypt_salt_rounds);
       this.password = await bcrypt.hash(password, saltRounds);
     }
     next();
@@ -55,21 +55,21 @@ userSchema.pre("save", async function (next) {
   }
 });
 
+// Post-save hook
+userSchema.post("save", function (doc, next) {
+  doc.password = "";
+  next();
+});
+
 userSchema.pre("save", async function (next) {
   const isExistUser = await User.findOne({
     name: this.id,
   });
 
   if (isExistUser) {
-    throw new ThrowError(httpStatus.NOT_FOUND, "This user is already exists!");
+    throw new AppError(httpStatus.NOT_FOUND, "This user is already exists!");
   }
 
-  next();
-});
-
-// Post-save hook
-userSchema.post("save", function (doc, next) {
-  doc.password = "";
   next();
 });
 

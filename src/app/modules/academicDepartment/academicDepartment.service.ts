@@ -1,18 +1,9 @@
-import httpStatus from "http-status";
 import { IAcademicDepartment } from "./academicDepartment.interface";
 import { AcademicDepartment } from "./academicDepartment.model";
-import { ThrowError } from "../../error/throwError";
 
 // Create academic department service
 const createAcademicDepartmentIntoDB = async (payload: IAcademicDepartment) => {
   const result = await AcademicDepartment.create(payload);
-
-  if (!result) {
-    throw new ThrowError(
-      httpStatus.NOT_FOUND,
-      "Failed to cerate academic department!",
-    );
-  }
 
   return result;
 };
@@ -21,26 +12,14 @@ const createAcademicDepartmentIntoDB = async (payload: IAcademicDepartment) => {
 const getAllAcademicDepartmentFromDB = async () => {
   const result = await AcademicDepartment.find().populate("academicFaculty");
 
-  if (!result) {
-    throw new ThrowError(
-      httpStatus.NOT_FOUND,
-      "Failed to retrieved academic departments!",
-    );
-  }
   return result;
 };
 
 // Get single academic department service
 const getSingleAcademicDepartmentFromDB = async (_id: string) => {
-  const result = await AcademicDepartment.findOne({ _id }).populate(
-    "academicFaculty",
-  );
-  if (!result) {
-    throw new ThrowError(
-      httpStatus.NOT_FOUND,
-      "Failed to retrieved academic department!",
-    );
-  }
+  const result =
+    await AcademicDepartment.findById(_id).populate("academicFaculty");
+
   return result;
 };
 
@@ -49,15 +28,10 @@ const updateSingleAcademicDepartmentFromDB = async (
   _id: string,
   payload: IAcademicDepartment,
 ) => {
-  const result = await AcademicDepartment.findByIdAndUpdate({ _id }, payload, {
+  const result = await AcademicDepartment.findByIdAndUpdate(_id, payload, {
     new: true,
   });
-  if (!result) {
-    throw new ThrowError(
-      httpStatus.NOT_FOUND,
-      "Failed to update academic department!",
-    );
-  }
+
   return result;
 };
 

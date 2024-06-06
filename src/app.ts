@@ -1,26 +1,24 @@
-import express, { Application, NextFunction, Request, Response } from "express";
-const app: Application = express();
+import express, { Application, Request, Response } from "express";
 import cors from "cors";
 import router from "./app/routes";
-import { RouteError } from "./app/middleware/routeError";
-import { GlobalError } from "./app/middleware/globalError";
+import { RouteError } from "./app/middleware/notFound";
+import { GlobalError } from "./app/middleware/globalErrorHandler";
 
-// parsers
+const app: Application = express();
+
+//parsers middleware
 app.use(express.json());
-app.use(express.text());
 app.use(cors());
 
-// Logger middleware
-const logger = (req: Request, res: Response, next: NextFunction) => {
-  next();
-};
-// server initialization
-app.get("/", (req: Request, res: Response) => {
-  res.send("This mongoose server is running");
-});
+// application routes
+app.use("/api/v1", router);
 
-// Application routes
-app.use("/api/v1", logger, router);
+const test = async (req: Request, res: Response) => {
+  const a = 10;
+  res.send(a);
+};
+
+app.get("/", test);
 
 // Route not found handler
 app.use("*", RouteError);

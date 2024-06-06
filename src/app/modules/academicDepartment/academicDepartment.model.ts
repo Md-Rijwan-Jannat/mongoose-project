@@ -4,7 +4,7 @@ import {
   IAcademicDepartment,
   IAcademicDepartmentModel,
 } from "./academicDepartment.interface";
-import { ThrowError } from "../../error/throwError";
+import AppError from "../../error/AppError";
 
 export const academicDepartmentSchema = new Schema<
   IAcademicDepartment,
@@ -38,10 +38,7 @@ academicDepartmentSchema.pre("find", async function (next) {
   const isExistDepartment = await AcademicDepartment.findOne(query);
 
   if (!isExistDepartment) {
-    throw new ThrowError(
-      httpStatus.NOT_FOUND,
-      "This department doesn't exists!",
-    );
+    throw new AppError(httpStatus.NOT_FOUND, "This department doesn't exists!");
   }
 
   next();
@@ -54,7 +51,7 @@ academicDepartmentSchema.pre("save", async function (next) {
   });
 
   if (isExistDepartment) {
-    throw new ThrowError(
+    throw new AppError(
       httpStatus.NOT_FOUND,
       "This department is already exists!",
     );
@@ -70,10 +67,7 @@ academicDepartmentSchema.pre("findOneAndUpdate", async function (next) {
   const isExistingDepartment = await AcademicDepartment.findOne(query);
 
   if (!isExistingDepartment) {
-    throw new ThrowError(
-      httpStatus.NOT_FOUND,
-      "This department doesn't exist!",
-    );
+    throw new AppError(httpStatus.NOT_FOUND, "This department doesn't exist!");
   }
 
   next();
@@ -87,7 +81,7 @@ academicDepartmentSchema.static(
       _id: id,
     });
     if (!department) {
-      throw new ThrowError(
+      throw new AppError(
         httpStatus.NOT_FOUND,
         "This department doesn't exist!",
       );

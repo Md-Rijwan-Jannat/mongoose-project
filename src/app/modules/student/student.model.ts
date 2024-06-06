@@ -1,20 +1,18 @@
 import { Schema, model } from "mongoose";
 import {
-  IStudent,
-  IStudentName,
-  IGuardian,
-  ILocalGuardian,
-  IStudentModel,
+  StudentModel,
+  TGuardian,
+  TLocalGuardian,
+  TStudent,
+  TUserName,
 } from "./student.interface";
-import { ThrowError } from "../../error/throwError";
-import httpStatus from "http-status";
 
-// Student name schema
-const studentNameSchema = new Schema<IStudentName>({
+const userNameSchema = new Schema<TUserName>({
   firstName: {
     type: String,
-    required: true,
+    required: [true, "First Name is required"],
     trim: true,
+    maxlength: [20, "Name can not be more than 20 characters"],
   },
   middleName: {
     type: String,
@@ -22,249 +20,165 @@ const studentNameSchema = new Schema<IStudentName>({
   },
   lastName: {
     type: String,
-    required: true,
     trim: true,
+    required: [true, "Last Name is required"],
+    maxlength: [20, "Name can not be more than 20 characters"],
   },
 });
 
-// Student guardian schema
-const guardianSchema = new Schema<IGuardian>({
+const guardianSchema = new Schema<TGuardian>({
   fatherName: {
     type: String,
-    required: true,
     trim: true,
-  },
-  fatherContactNo: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true,
+    required: [true, "Father Name is required"],
   },
   fatherOccupation: {
     type: String,
-    required: true,
     trim: true,
+    required: [true, "Father occupation is required"],
+  },
+  fatherContactNo: {
+    type: String,
+    required: [true, "Father Contact No is required"],
   },
   motherName: {
     type: String,
-    required: true,
-    trim: true,
-  },
-  motherContactNo: {
-    type: String,
-    required: true,
-    trim: true,
+    required: [true, "Mother Name is required"],
   },
   motherOccupation: {
     type: String,
-    required: true,
-    trim: true,
+    required: [true, "Mother occupation is required"],
+  },
+  motherContactNo: {
+    type: String,
+    required: [true, "Mother Contact No is required"],
   },
 });
 
-// Student local guardian schema
-const localGuardianSchema = new Schema<ILocalGuardian>({
+const localGuradianSchema = new Schema<TLocalGuardian>({
   name: {
     type: String,
-    required: true,
-    trim: true,
+    required: [true, "Name is required"],
+  },
+  occupation: {
+    type: String,
+    required: [true, "Occupation is required"],
   },
   contactNo: {
     type: String,
-    required: true,
-    unique: true,
-    trim: true,
+    required: [true, "Contact number is required"],
   },
   address: {
     type: String,
-    required: true,
-    trim: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true,
+    required: [true, "Address is required"],
   },
 });
 
-// Student main schema
-const studentSchema = new Schema<IStudent, IStudentModel>(
+const studentSchema = new Schema<TStudent, StudentModel>(
   {
     id: {
       type: String,
-      required: true,
+      required: [true, "ID is required"],
       unique: true,
     },
     user: {
       type: Schema.Types.ObjectId,
-      required: true,
+      required: [true, "User id is required"],
+      unique: true,
       ref: "User",
     },
     name: {
-      type: studentNameSchema,
-      required: true,
+      type: userNameSchema,
+      required: [true, "Name is required"],
     },
     gender: {
       type: String,
-      enum: ["Male", "Female"],
-      required: true,
+      enum: {
+        values: ["male", "female", "other"],
+        message: "{VALUE} is not a valid gender",
+      },
+      required: [true, "Gender is required"],
     },
-    religion: {
+    dateOfBirth: { type: Date },
+    email: {
       type: String,
-      enum: ["Islam", "Hindu", "Christian", "Buddhist", "Others"],
-      required: true,
-      trim: true,
+      required: [true, "Email is required"],
+      unique: true,
+    },
+    contactNo: { type: String, required: [true, "Contact number is required"] },
+    emergencyContactNo: {
+      type: String,
+      required: [true, "Emergency contact number is required"],
     },
     bloodGroup: {
       type: String,
-      enum: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
-      trim: true,
-    },
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-      trim: true,
-    },
-    dateOfBirth: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    contactNo: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    emergencyContactNo: {
-      type: String,
-      required: true,
-      trim: true,
+      enum: {
+        values: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
+        message: "{VALUE} is not a valid blood group",
+      },
     },
     presentAddress: {
       type: String,
-      required: true,
-      trim: true,
+      required: [true, "Present address is required"],
     },
     permanentAddress: {
       type: String,
-      required: true,
-      trim: true,
-    },
-    localGuardian: {
-      type: localGuardianSchema,
-      required: true,
+      required: [true, "Permanent address is required"],
     },
     guardian: {
       type: guardianSchema,
-      required: true,
+      required: [true, "Guardian information is required"],
     },
-    profileImage: {
-      type: String,
-      required: true,
+    localGuardian: {
+      type: localGuradianSchema,
+      required: [true, "Local guardian information is required"],
     },
-    academicDepartment: {
-      type: Schema.Types.ObjectId,
-      required: true,
-      ref: "AcademicDepartment",
-    },
+    profileImg: { type: String },
     admissionSemester: {
       type: Schema.Types.ObjectId,
-      required: true,
-      ref: "Student",
+      ref: "AcademicSemester",
     },
     isDeleted: {
       type: Boolean,
       default: false,
     },
-  },
-
-  {
-    timestamps: true,
-    toJSON: {
-      virtuals: true,
+    academicDepartment: {
+      type: Schema.Types.ObjectId,
+      ref: "AcademicDepartment",
     },
-    toObject: {
+  },
+  {
+    toJSON: {
       virtuals: true,
     },
   },
 );
 
-// virtual
+//virtual
 studentSchema.virtual("fullName").get(function () {
-  return `${this.name.firstName} ${this.name.middleName} ${this.name.lastName}`;
+  return this?.name?.firstName + this?.name?.middleName + this?.name?.lastName;
 });
 
-// Pre-find hooks
+// Query Middleware
 studentSchema.pre("find", function (next) {
-  this.find({ isDeleted: { $eq: false } });
+  this.find({ isDeleted: { $ne: true } });
   next();
 });
 
 studentSchema.pre("findOne", function (next) {
-  this.findOne({ isDeleted: { $eq: false } });
+  this.find({ isDeleted: { $ne: true } });
   next();
 });
 
 studentSchema.pre("aggregate", function (next) {
-  this.pipeline().unshift({ $match: { isDeleted: { $eq: false } } });
+  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
   next();
 });
 
-// Student can't be a duplicate
-studentSchema.pre("save", async function (next) {
-  const isExistStudent = await Student.findOne({
-    id: this.id,
-  });
+//creating a custom static method
+studentSchema.statics.isUserExists = async function (id: string) {
+  const existingUser = await Student.findOne({ id });
+  return existingUser;
+};
 
-  if (isExistStudent) {
-    throw new ThrowError(
-      httpStatus.NOT_FOUND,
-      "This student is already exists!",
-    );
-  }
-
-  next();
-});
-
-//  Unknown _id validation error
-studentSchema.pre("find", async function (next) {
-  const query = this.getQuery();
-  const isExistStudent = await Student.findOne(query);
-
-  if (!isExistStudent) {
-    throw new ThrowError(httpStatus.NOT_FOUND, "This student doesn't exists!");
-  }
-
-  next();
-});
-
-// Unknown _id validation error for update
-studentSchema.pre("findOneAndUpdate", async function (next) {
-  const query = this.getQuery();
-
-  const isExistingStudent = await Student.findOne(query);
-
-  if (!isExistingStudent) {
-    throw new ThrowError(httpStatus.NOT_FOUND, "This student doesn't exist!");
-  }
-
-  next();
-});
-
-// Custom static method to check existence
-studentSchema.static("findOneOrThrowError", async function (id: string) {
-  const Student: IStudent | null = await this.findOne({
-    id: id,
-  });
-  if (!Student) {
-    throw new ThrowError(httpStatus.NOT_FOUND, "This student doesn't exist!");
-  }
-  return Student;
-});
-
-export const Student: IStudentModel = model<IStudent, IStudentModel>(
-  "Student",
-  studentSchema,
-);
+export const Student = model<TStudent, StudentModel>("Student", studentSchema);
