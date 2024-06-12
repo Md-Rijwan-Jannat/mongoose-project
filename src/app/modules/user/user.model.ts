@@ -1,11 +1,11 @@
 import { Schema, model } from "mongoose";
-import { IUser } from "./user.interface";
+import { IUser, UserModel } from "./user.interface";
 import config from "../../config";
 import bcrypt from "bcrypt";
 import httpStatus from "http-status";
 import AppError from "../../error/AppError";
 
-export const userSchema = new Schema<IUser>(
+export const userSchema = new Schema<IUser, UserModel>(
   {
     id: {
       type: String,
@@ -16,10 +16,14 @@ export const userSchema = new Schema<IUser>(
     password: {
       type: String,
       trim: true,
+      select: 0,
     },
     needsChangePassword: {
       type: Boolean,
       default: true,
+    },
+    passwordCreatedAt: {
+      type: Date,
     },
     role: {
       type: String,
@@ -73,4 +77,39 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-export const User = model<IUser>("User", userSchema);
+// this user is exists!
+userSchema.statics.isUserExistingByCustomId = async function (id: string) {
+  return await User.findOne({ id }).select("+password");
+};
+
+//  password is match
+userSchema.statics.isPasswordMatch = async function (
+  resendLoginPassword: string,
+  hashPassword: string,
+) {
+  return await bcrypt.compare(resendLoginPassword, hashPassword);
+};
+
+// is user blocked
+userSchema.statics.isUserBlocked = async function (id: string) {
+  const user = await User.findOne({ id }).select("status");
+  return user ? user.status === "blocked" : false;
+};
+
+// user is deleted
+userSchema.statics.isUserDeleted = async function (id: string) {
+  const user = await User.findOne({ id }).select("isDeleted");
+  return user ? user.isDeleted : false;
+};
+
+// check if password change then invalid jwt token
+userSchema.statics.isJwtIssuedBeforePasswordChange = async function (
+  passwordChangedTimestamp: number,
+  passwordIssuedTimestamp: number,
+) {
+  return passwordChangedTimestamp > passwordIssuedTimestamp;
+
+  // return passwordChangedTimestamp > passwordIssuedTimestamp;
+};
+
+export const User = model<IUser, UserModel>("User", userSchema);

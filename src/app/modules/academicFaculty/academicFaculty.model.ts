@@ -40,17 +40,17 @@ academicFacultySchema.pre("save", async function (next) {
   next();
 });
 
-//  Unknown _id validation error
-academicFacultySchema.pre("find", async function (next) {
-  const query = this.getQuery();
-  const isExistFaculty = await AcademicFaculty.findOne(query);
+// //  Unknown _id validation error
+// academicFacultySchema.pre("find", async function (next) {
+//   const query = this.getQuery();
+//   const isExistFaculty = await AcademicFaculty.findOne(query);
 
-  if (!isExistFaculty) {
-    throw new AppError(httpStatus.NOT_FOUND, "This faculty doesn't exists!");
-  }
+//   if (!isExistFaculty) {
+//     throw new AppError(httpStatus.NOT_FOUND, "This faculty doesn't exists!");
+//   }
 
-  next();
-});
+//   next();
+// });
 
 // Unknown _id validation error for update
 academicFacultySchema.pre("findOneAndUpdate", async function (next) {

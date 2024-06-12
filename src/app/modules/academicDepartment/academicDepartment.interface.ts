@@ -9,5 +9,5 @@ export interface IAcademicDepartment {
 }
 
 export interface IAcademicDepartmentModel extends Model<IAcademicDepartment> {
-  findOneOrThrowError: (id: string) => Promise<IAcademicDepartment>;
+  isDepartmentExists: (id: string) => Promise<IAcademicDepartment>;
 }

@@ -3,6 +3,7 @@ import { AcademicDepartment } from "./academicDepartment.model";
 
 // Create academic department service
 const createAcademicDepartmentIntoDB = async (payload: IAcademicDepartment) => {
+  await AcademicDepartment.isDepartmentExists(payload._id);
   const result = await AcademicDepartment.create(payload);
 
   return result;

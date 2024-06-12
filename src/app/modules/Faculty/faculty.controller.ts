@@ -4,6 +4,8 @@ import sendResponse from "../../utils/sendResponse";
 import { FacultyService } from "./faculty.service";
 
 const getAllFaculties = catchAsync(async (req, res) => {
+  console.log("This cookie refresh token", req.cookies);
+
   const result = await FacultyService.getAllFacultiesFromDB(req.query);
 
   sendResponse(res, {

@@ -2,10 +2,12 @@ import express from "express";
 import { StudentControllers } from "./student.controller";
 import { updateStudentValidationSchema } from "./student.validation";
 import { RequestValidation } from "../../middleware/validateRequest";
+import { Auth } from "../../middleware/auth";
+import { USER_ROLE } from "../user/user.constants";
 
 const router = express.Router();
 
-router.get("/", StudentControllers.getAllStudents);
+router.get("/", Auth(USER_ROLE.student), StudentControllers.getAllStudents);
 
 router.get("/:id", StudentControllers.getSingleStudent);
 

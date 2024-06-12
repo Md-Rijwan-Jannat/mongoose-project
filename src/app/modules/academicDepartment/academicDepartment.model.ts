@@ -75,15 +75,13 @@ academicDepartmentSchema.pre("findOneAndUpdate", async function (next) {
 
 // Custom static method to check existence
 academicDepartmentSchema.static(
-  "findOneOrThrowError",
+  "isDepartmentExists",
   async function (id: string) {
-    const department: IAcademicDepartment | null = await this.findOne({
-      _id: id,
-    });
-    if (!department) {
+    const department: IAcademicDepartment | null = await this.findById(id);
+    if (department) {
       throw new AppError(
         httpStatus.NOT_FOUND,
-        "This department doesn't exist!",
+        "This department already exist!",
       );
     }
     return department;

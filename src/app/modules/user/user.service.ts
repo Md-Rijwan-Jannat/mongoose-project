@@ -129,33 +129,32 @@ const createFacultyIntoDB = async (password: string, payload: IFaculty) => {
 
 const createAdminIntoDB = async (password: string, payload: IAdmin) => {
   const userData: Partial<IUser> = {};
-
   userData.password = password || (config.default_password as string);
-
   userData.role = "admin";
 
   const session = await mongoose.startSession();
-
   try {
     session.startTransaction();
-
     userData.id = await generateAdminId();
-
     const newUser = await User.create([userData], { session });
-
+    if (!newUser.length) {
+      throw new AppError(httpStatus.BAD_REQUEST, "Failed to create admin");
+    }
     payload.id = newUser[0].id;
     payload.user = newUser[0]._id;
 
     const newAdmin = await Admin.create([payload], { session });
+    if (!newAdmin.length) {
+      throw new AppError(httpStatus.BAD_REQUEST, "Failed to create admin");
+    }
 
     await session.commitTransaction();
     await session.endSession();
-
-    return newAdmin[0];
-  } catch (error) {
+    return newAdmin;
+  } catch (err: any) {
     await session.abortTransaction();
     await session.endSession();
-    throw new AppError(httpStatus.BAD_REQUEST, "Admin can't create!");
+    throw new Error(err);
   }
 };
 
