@@ -145,8 +145,40 @@ const refreshToken = async (token: string) => {
   };
 };
 
+const forgetPasswordIntoDB = async (userId: string) => {
+  const user = await User.findOne({ id: userId });
+
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, "This user is not found!");
+  }
+
+  if (await User.isUserDeleted(user.id)) {
+    throw new AppError(httpStatus.FORBIDDEN, "This user is deleted!");
+  }
+
+  if (await User.isUserBlocked(user.id)) {
+    throw new AppError(httpStatus.FORBIDDEN, "This user is blocked!");
+  }
+
+  const jwtPayload = {
+    userId: user.id,
+    role: user.role,
+  };
+
+  const resetToken = createJwtToken(
+    jwtPayload,
+    config.jwt_access_token as string,
+    "10m",
+  );
+
+  const resetLink = `http://localhost:3000?id=${user.id}&token=${resetToken}`;
+
+  console.log(resetLink);
+};
+
 export const AuthService = {
   userLogin,
   changePasswordIntoDB,
   refreshToken,
+  forgetPasswordIntoDB,
 };

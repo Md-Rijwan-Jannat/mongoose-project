@@ -2,11 +2,14 @@ import express from "express";
 import { AcademicFacultyControllers } from "./academicFaculty.controller";
 import { RequestValidation } from "../../middleware/validateRequest";
 import { AcademicFacultyValidation } from "./academicFaculty.validation";
+import { Auth } from "../../middleware/auth";
+import { USER_ROLE } from "../user/user.constants";
 
 const router = express.Router();
 
 router.post(
   "/create-academic-faculty",
+  Auth(USER_ROLE.admin),
   RequestValidation(
     AcademicFacultyValidation.createAcademicFacultyValidationSchema,
   ),
@@ -15,6 +18,7 @@ router.post(
 
 router.get(
   "/",
+  Auth(USER_ROLE.admin, USER_ROLE.faculty, USER_ROLE.student),
   RequestValidation(
     AcademicFacultyValidation.updateAcademicFacultyValidationSchema,
   ),
@@ -23,6 +27,7 @@ router.get(
 
 router.get(
   "/:facultyId",
+  Auth(USER_ROLE.admin, USER_ROLE.faculty, USER_ROLE.student),
   RequestValidation(
     AcademicFacultyValidation.updateAcademicFacultyValidationSchema,
   ),
@@ -31,6 +36,7 @@ router.get(
 
 router.patch(
   "/:facultyId",
+  Auth(USER_ROLE.admin),
   RequestValidation(
     AcademicFacultyValidation.updateAcademicFacultyValidationSchema,
   ),
