@@ -7,17 +7,23 @@ import cookieParser from "cookie-parser";
 
 const app: Application = express();
 
-//parsers middleware
+// Parsers middleware
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({ origin: ["http://localhost:5173"] }));
 
-// application routes
+// Application routes
 app.use("/api/v1", router);
 
+// Test route
 const test = async (req: Request, res: Response) => {
-  const a = 10;
-  res.send(a);
+  try {
+    const a = 10;
+    res.send(`The value is ${a}`); // Sending a valid response
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 };
 
 app.get("/", test);
