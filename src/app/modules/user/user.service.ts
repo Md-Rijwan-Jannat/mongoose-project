@@ -18,6 +18,7 @@ import { Faculty } from "../Faculty/faculty.model";
 import { IAdmin } from "../Admin/admin.interface";
 import { Admin } from "../Admin/admin.model";
 import { verifyToken } from "../Auth/auth.utils";
+import { AcademicFaculty } from "../academicFaculty/academicFaculty.model";
 
 const createStudentIntoDB = async (password: string, payload: TStudent) => {
   // create a user object
@@ -53,9 +54,26 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
     if (!newUser.length) {
       throw new AppError(httpStatus.BAD_REQUEST, "Failed to create user");
     }
-    // set id , _id as user
+    // check if academicFaculty is exists
+    const isAcademicDepartmentExists = await AcademicDepartment.findById(
+      payload.academicDepartment,
+    );
+
+    if (!isAcademicDepartmentExists) {
+      throw new AppError(httpStatus.NOT_FOUND, "Academic department not found");
+    }
+
+    const isAcademicFacultyExists = await AcademicFaculty.findById(
+      isAcademicDepartmentExists.academicFaculty,
+    );
+
+    if (!isAcademicFacultyExists) {
+      throw new AppError(httpStatus.NOT_FOUND, "Academic Faculty not found");
+    }
+
     payload.id = newUser[0].id;
-    payload.user = newUser[0]._id; //reference _id
+    payload.user = newUser[0]._id;
+    payload.academicFaculty = isAcademicDepartmentExists.academicFaculty;
 
     // create a student (transaction-2)
 
@@ -92,6 +110,22 @@ const createFacultyIntoDB = async (password: string, payload: IFaculty) => {
     throw new AppError(httpStatus.NOT_FOUND, "Academic Department not found");
   }
 
+  const isAcademicDepartmentExists = await AcademicDepartment.findById(
+    payload.academicDepartment,
+  );
+
+  if (!isAcademicDepartmentExists) {
+    throw new AppError(httpStatus.NOT_FOUND, "Academic department not found");
+  }
+
+  const isAcademicFacultyExists = await AcademicFaculty.findById(
+    isAcademicDepartmentExists.academicFaculty,
+  );
+
+  if (!isAcademicFacultyExists) {
+    throw new AppError(httpStatus.NOT_FOUND, "Academic Faculty not found");
+  }
+
   const session = await mongoose.startSession();
 
   try {
@@ -110,6 +144,7 @@ const createFacultyIntoDB = async (password: string, payload: IFaculty) => {
 
     payload.id = newUser[0].id;
     payload.user = newUser[0]._id;
+    payload.academicFaculty = isAcademicDepartmentExists.academicFaculty;
 
     const newFaculty = await Faculty.create([payload], { session });
 

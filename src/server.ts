@@ -2,6 +2,7 @@ import app from "./app";
 import mongoose from "mongoose";
 import config from "./app/config";
 import { Server } from "http";
+import seedSuperAdmin from "./app/DB";
 
 // server is here
 let server: Server;
@@ -12,6 +13,7 @@ async function main() {
       w: "majority",
       wtimeoutMS: 5000,
     });
+    seedSuperAdmin();
     console.log("Connected to MongoDB");
 
     server = app.listen(config.port, () => {

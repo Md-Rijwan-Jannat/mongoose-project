@@ -9,26 +9,26 @@ const router = express.Router();
 
 router.get(
   "/",
-  Auth(USER_ROLE.admin, USER_ROLE.faculty, USER_ROLE.student),
+  Auth(USER_ROLE.superAdmin, USER_ROLE.admin, USER_ROLE.faculty),
   FacultyController.getAllFaculties,
 );
 
 router.get(
   "/:id",
-  Auth(USER_ROLE.admin, USER_ROLE.faculty, USER_ROLE.student),
+  Auth(USER_ROLE.superAdmin, USER_ROLE.admin, USER_ROLE.faculty),
   FacultyController.getSingleFaculty,
 );
 
 router.patch(
   "/:id",
-  Auth(USER_ROLE.admin),
+  Auth(USER_ROLE.superAdmin, USER_ROLE.admin),
   RequestValidation(FacultyValidation.updateFacultySchemaValidation),
   FacultyController.updateSingleFaculty,
 );
 
 router.delete(
   "/:id",
-  Auth(USER_ROLE.admin),
+  Auth(USER_ROLE.superAdmin, USER_ROLE.admin),
   FacultyController.deleteSingleFaculty,
 );
 

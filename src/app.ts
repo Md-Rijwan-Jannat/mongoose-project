@@ -10,8 +10,12 @@ const app: Application = express();
 // Parsers middleware
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({ origin: ["http://localhost:5173"], credentials: true }));
-
+app.use(
+  cors({
+    origin: ["http://localhost:5173"],
+    credentials: true,
+  }),
+);
 // Application routes
 app.use("/api/v1", router);
 
@@ -21,7 +25,7 @@ const test = async (req: Request, res: Response) => {
     const a = 10;
     res.send(`The value is ${a}`); // Sending a valid response
   } catch (error) {
-    console.error(error);
+    console.log(error);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };

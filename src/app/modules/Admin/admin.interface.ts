@@ -21,7 +21,7 @@ export interface IAdmin extends Document {
   occupation: string;
   presentAddress: string;
   permanentAddress: string;
-  profileImg: string;
+  profileImage?: string;
   isDeleted: boolean;
 }
 

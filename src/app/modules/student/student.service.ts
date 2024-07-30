@@ -12,12 +12,8 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
     Student.find()
       .populate("user")
       .populate("admissionSemester")
-      .populate({
-        path: "academicDepartment",
-        populate: {
-          path: "academicFaculty",
-        },
-      }),
+      .populate("academicDepartment")
+      .populate("academicFaculty"),
     query,
   )
     .search(studentSearchableFields)
@@ -32,13 +28,10 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
 
 const getSingleStudentFromDB = async (id: string) => {
   const result = await Student.findById(id)
+    .populate("user")
     .populate("admissionSemester")
-    .populate({
-      path: "academicDepartment",
-      populate: {
-        path: "academicFaculty",
-      },
-    });
+    .populate("academicDepartment")
+    .populate("academicFaculty");
   return result;
 };
 
@@ -71,13 +64,10 @@ const updateStudentIntoDB = async (id: string, payload: Partial<TStudent>) => {
     new: true,
     runValidators: true,
   })
+    .populate("user")
     .populate("admissionSemester")
-    .populate({
-      path: "academicDepartment",
-      populate: {
-        path: "academicFaculty",
-      },
-    });
+    .populate("academicDepartment")
+    .populate("academicFaculty");
   return result;
 };
 

@@ -80,7 +80,12 @@ const adminSchema = new Schema<IAdmin>(
       required: [true, "Permanent address is required"],
       trim: true,
     },
-    profileImg: { type: String, required: [true, "Profile image is required"] },
+    profileImage: {
+      type: String,
+      trim: true,
+      default:
+        "https://i.ibb.co/T4t96zZ/blank-profile-picture-973460-960-720.webp",
+    },
     isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true },

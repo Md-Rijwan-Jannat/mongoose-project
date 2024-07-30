@@ -53,9 +53,10 @@ const createAdminSchemaValidation = z.object({
       permanentAddress: z
         .string({ required_error: "Permanent address is required" })
         .min(1, { message: "Permanent address must not be empty" }),
-      profileImg: z
+      profileImage: z
         .string({ required_error: "Profile image is required" })
-        .min(1, { message: "Profile image must not be empty" }),
+        .min(1, { message: "Profile image must not be empty" })
+        .optional(),
     }),
   }),
 });

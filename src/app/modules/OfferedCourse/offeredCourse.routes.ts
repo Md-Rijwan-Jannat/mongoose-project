@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.post(
   "/create-offered-course",
-  Auth(USER_ROLE.admin),
+  Auth(USER_ROLE.superAdmin, USER_ROLE.admin),
   RequestValidation(
     OfferedCourseValidation.createOfferedCourseValidationSchema,
   ),
@@ -18,19 +18,24 @@ router.post(
 
 router.get(
   "/",
-  Auth(USER_ROLE.admin, USER_ROLE.faculty, USER_ROLE.student),
+  Auth(USER_ROLE.superAdmin, USER_ROLE.admin, USER_ROLE.faculty),
   OfferedCourseController.getAllOfferedCourse,
 );
 
 router.get(
   "/:id",
-  Auth(USER_ROLE.admin, USER_ROLE.faculty, USER_ROLE.student),
+  Auth(
+    USER_ROLE.superAdmin,
+    USER_ROLE.admin,
+    USER_ROLE.faculty,
+    USER_ROLE.student,
+  ),
   OfferedCourseController.getSingleOfferedCourse,
 );
 
 router.patch(
   "/:id",
-  Auth(USER_ROLE.admin),
+  Auth(USER_ROLE.superAdmin, USER_ROLE.admin),
   RequestValidation(
     OfferedCourseValidation.updateOfferedCourseValidationSchema,
   ),
@@ -39,7 +44,7 @@ router.patch(
 
 router.delete(
   "/:id",
-  Auth(USER_ROLE.admin),
+  Auth(USER_ROLE.superAdmin, USER_ROLE.admin),
   OfferedCourseController.deleteSingleOfferedCourse,
 );
 

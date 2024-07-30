@@ -76,10 +76,6 @@ const facultySchema = new Schema<IFaculty>(
       required: [true, "Permanent address is required"],
       trim: true,
     },
-    profileImg: {
-      type: String,
-      required: [true, "Profile image is required"],
-    },
     academicDepartment: {
       type: Schema.Types.ObjectId,
       required: [true, "Academic department image is required"],
@@ -89,6 +85,12 @@ const facultySchema = new Schema<IFaculty>(
       type: Schema.Types.ObjectId,
       required: [true, "Academic faculty image is required"],
       ref: "AcademicFaculty",
+    },
+    profileImage: {
+      type: String,
+      trim: true,
+      default:
+        "https://i.ibb.co/T4t96zZ/blank-profile-picture-973460-960-720.webp",
     },
     isDeleted: { type: Boolean, default: false },
   },

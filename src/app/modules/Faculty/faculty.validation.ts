@@ -65,9 +65,18 @@ const createFacultySchemaValidation = z.object({
       permanentAddress: z
         .string({ required_error: "Permanent address is required" })
         .min(1, { message: "Permanent address must not be empty" }),
-      profileImg: z
+      academicDepartment: z.string({
+        required_error: "Academic department is required",
+      }),
+      academicFaculty: z
+        .string({
+          required_error: "Academic faculty is required",
+        })
+        .optional(),
+      profileImage: z
         .string({ required_error: "Profile image is required" })
-        .min(1, { message: "Profile image must not be empty" }),
+        .min(1, { message: "Profile image must not be empty" })
+        .optional(),
       isDeleted: z.boolean().optional(),
     }),
   }),
