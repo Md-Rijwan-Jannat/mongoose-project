@@ -4,15 +4,14 @@ import sendResponse from "../../utils/sendResponse";
 import { FacultyService } from "./faculty.service";
 
 const getAllFaculties = catchAsync(async (req, res) => {
-  console.log("This cookie refresh token", req.cookies);
-
   const result = await FacultyService.getAllFacultiesFromDB(req.query);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: "Faculties retrieved successfully!",
-    data: result,
+    meta: result.meta,
+    data: result.result,
   });
 });
 
