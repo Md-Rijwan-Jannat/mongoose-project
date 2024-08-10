@@ -20,7 +20,9 @@ const createAcademicSemester = catchAsync(async (req, res) => {
 
 // get all semesters controller
 const getAllAcademicSemester = catchAsync(async (req, res) => {
-  const result = await AcademicSemesterService.getAllAcademicSemesterFromDB();
+  const result = await AcademicSemesterService.getAllAcademicSemesterFromDB(
+    req.query,
+  );
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,

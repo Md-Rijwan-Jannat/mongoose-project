@@ -2,6 +2,8 @@ import httpStatus from "http-status";
 import AppError from "../../error/AppError";
 import { IAcademicFaculty } from "./academicFaculty.interface";
 import { AcademicFaculty } from "./academicFaculty.model";
+import QueryBuilder from "../../builder/QueryBuilder";
+import { AcademicFacultySearchableFields } from "./academicFaculty.constants";
 
 // Create academic faculty service
 const createAcademicFacultyIntoDB = async (payload: IAcademicFaculty) => {
@@ -18,16 +20,26 @@ const createAcademicFacultyIntoDB = async (payload: IAcademicFaculty) => {
 };
 
 // Get all faculty service
-const getAllAcademicFacultyFromDB = async () => {
-  const result = await AcademicFaculty.find();
+const getAllAcademicFacultyFromDB = async (query: Record<string, unknown>) => {
+  const academicFacultyQueryBuilder = new QueryBuilder(
+    AcademicFaculty.find(),
+    query,
+  );
 
-  if (!result) {
-    throw new AppError(
-      httpStatus.NOT_FOUND,
-      "Failed to retrieved academic faculties!",
-    );
-  }
-  return result;
+  const modifiedQuery = academicFacultyQueryBuilder
+    .search(AcademicFacultySearchableFields)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await modifiedQuery.modelQuery;
+  const meta = await academicFacultyQueryBuilder.countTotal();
+
+  return {
+    meta,
+    result,
+  };
 };
 
 // Get single academic faculty service

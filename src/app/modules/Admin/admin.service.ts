@@ -8,15 +8,20 @@ import QueryBuilder from "../../builder/QueryBuilder";
 import { adminSearchableFields } from "./admin.constants";
 
 const getAllAdminsFromDB = async (query: Record<string, unknown>) => {
-  const adminQuery = new QueryBuilder(Admin.find(), query)
+  const filterQueryBuilder = new QueryBuilder(Admin.find(), query)
     .search(adminSearchableFields)
     .filter()
-    .paginate()
     .sort()
+    .paginate()
     .fields();
 
-  const result = await adminQuery.modelQuery;
-  return result;
+  const result = await filterQueryBuilder.modelQuery;
+  const meta = await filterQueryBuilder.countTotal();
+
+  return {
+    meta,
+    result,
+  };
 };
 
 const getSingleAdminFromDB = async (id: string) => {

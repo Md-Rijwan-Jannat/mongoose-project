@@ -18,7 +18,7 @@ const courseMarksSchema = new Schema({
   classTest2: {
     type: Number,
     min: 0,
-    max: 40,
+    max: 20,
     default: 0,
   },
   finalTerm: {

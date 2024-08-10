@@ -8,7 +8,7 @@ import { Student } from "./student.model";
 import AppError from "../../error/AppError";
 
 const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
-  const studentQuery = new QueryBuilder(
+  const studentQueryBuilder = new QueryBuilder(
     Student.find()
       .populate("user")
       .populate("admissionSemester")
@@ -22,8 +22,12 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
     .paginate()
     .fields();
 
-  const result = await studentQuery.modelQuery;
-  return result;
+  const result = await studentQueryBuilder.modelQuery;
+  const meta = await studentQueryBuilder.countTotal();
+  return {
+    meta,
+    result,
+  };
 };
 
 const getSingleStudentFromDB = async (id: string) => {
