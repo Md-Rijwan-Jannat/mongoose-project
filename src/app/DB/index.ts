@@ -13,7 +13,6 @@ const superUser = {
 };
 
 const seedSuperAdmin = async () => {
-  // when on the data base have super admin then the super admin will be not create other wise super admin not found then automatic create a super admin when connect the database
 
   const isSuperAdminExists = await User.findOne({
     role: USER_ROLE.superAdmin,

@@ -45,7 +45,7 @@ export const createStudentValidationSchema = z.object({
     password: passwordSchema,
     student: z.object({
       name: createUserNameValidationSchema,
-      gender: z.enum(["male", "female", "other"]),
+      gander: z.enum(["male", "female", "other"]),
       dateOfBirth: z.string().optional(),
       email: z.string().email(),
       contactNo: z.string(),
@@ -56,7 +56,6 @@ export const createStudentValidationSchema = z.object({
       guardian: createGuardianValidationSchema,
       localGuardian: createLocalGuardianValidationSchema,
       admissionSemester: z.string(),
-      profileImage: z.string().optional(),
       academicDepartment: z.string(),
     }),
   }),
@@ -88,8 +87,11 @@ export const updateStudentValidationSchema = z.object({
   body: z.object({
     student: z.object({
       name: updateUserNameValidationSchema,
-      gender: z.enum(["male", "female", "other"]).optional(),
+      gander: z.enum(["male", "female", "other"]).optional(),
       dateOfBirth: z.string().optional(),
+      religion: z
+        .enum(["Islam", "Hindu", "Christian", "Buddhist", "Others"])
+        .or(z.string({ invalid_type_error: "Invalid religion" })),
       email: z.string().email().optional(),
       contactNo: z.string().optional(),
       emergencyContactNo: z.string().optional(),

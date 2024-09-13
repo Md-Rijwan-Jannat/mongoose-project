@@ -13,6 +13,7 @@ import {
   calculatePercentage,
   calculateTotalMarks,
 } from "./enrolledCourse.utils";
+import QueryBuilder from "../../builder/QueryBuilder";
 
 const createEnrolledCourseIntoDB = async (
   userId: string,
@@ -159,6 +160,42 @@ const createEnrolledCourseIntoDB = async (
   }
 };
 
+const myEnrolledCourseIntoDB = async (
+  studentId: string,
+  query: Record<string, unknown>,
+) => {
+  const student = await Student.findOne({ id: studentId });
+
+  if (!student) {
+    throw new AppError(httpStatus.NOT_FOUND, "Student not found");
+  }
+
+  const myEnrolledCourseQueryBuilder = new QueryBuilder(
+    EnrolledCourse.find({ student: student._id })
+      .populate("semesterRegistration")
+      .populate("academicSemester")
+      .populate("academicFaculty")
+      .populate("academicDepartment")
+      .populate("offeredCourse")
+      .populate("course")
+      .populate("faculty")
+      .populate("student"),
+    query,
+  )
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await myEnrolledCourseQueryBuilder.modelQuery;
+  const meta = await myEnrolledCourseQueryBuilder.countTotal();
+
+  return {
+    meta,
+    result,
+  };
+};
+
 export const updateEnrolledCourseMark = async (
   userId: string,
   payload: Partial<IEnrolledCourse>,
@@ -284,5 +321,6 @@ export const updateEnrolledCourseMark = async (
 
 export const EnrolledCourseServices = {
   createEnrolledCourseIntoDB,
+  myEnrolledCourseIntoDB,
   updateEnrolledCourseMark,
 };

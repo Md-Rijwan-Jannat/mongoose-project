@@ -6,46 +6,78 @@ import catchAsync from "../../utils/catchAsync";
 const createStudent = catchAsync(async (req, res) => {
   const { password, student: studentData } = req.body;
 
-  const result = await UserServices.createStudentIntoDB(password, studentData);
+  const result = await UserServices.createStudentIntoDB(
+    req.file as any,
+    password,
+    studentData,
+  );
+
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Student is created  successfully!",
+    message: "User student created successfully!",
     data: result,
   });
 });
 
+// create faculty
 const createFaculty = catchAsync(async (req, res) => {
   const { password, faculty: facultyData } = req.body;
-  const result = await UserServices.createFacultyIntoDB(password, facultyData);
 
+  const result = await UserServices.createFacultyIntoDB(
+    req.file as any,
+    password,
+    facultyData,
+  );
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Faculty is create successfully",
+    message: "Faculty created successfully!",
     data: result,
   });
 });
 
+// create admin
 const createAdmin = catchAsync(async (req, res) => {
   const { password, admin: adminData } = req.body;
-  const result = await UserServices.createAdminIntoDB(password, adminData);
+
+  const result = await UserServices.createAdminIntoDB(
+    req.file as any,
+    password,
+    adminData,
+  );
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Admin is create successfully",
+    message: "Admin created successfully!",
     data: result,
   });
 });
+
+// gwt me
 const getMe = catchAsync(async (req, res) => {
-  const token = req.headers.authorization;
-  const result = await UserServices.getMe(token as string);
+  const { userId, role } = req.user;
+
+  const result = await UserServices.getMe(userId, role as string);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Admin is create successfully",
+    message: "User is retrieved successfully!",
+    data: result,
+  });
+});
+
+// user status change
+const userStatusChange = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await UserServices.userStatusChangeIntoDB(req.body, id);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "User status change successfully!",
     data: result,
   });
 });
@@ -55,4 +87,5 @@ export const UserControllers = {
   createFaculty,
   createAdmin,
   getMe,
+  userStatusChange,
 };

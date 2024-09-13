@@ -29,8 +29,8 @@ const createFacultySchemaValidation = z.object({
     password: passwordSchema,
     faculty: z.object({
       name: FacultyNameSchema,
-      gender: z
-        .enum(["male", "female"])
+      gander: z
+        .enum(["male", "female", "other"])
         .or(
           z.string({ invalid_type_error: "Gender must be 'male' or 'female'" }),
         ),
@@ -72,10 +72,6 @@ const createFacultySchemaValidation = z.object({
         .string({
           required_error: "Academic faculty is required",
         })
-        .optional(),
-      profileImage: z
-        .string({ required_error: "Profile image is required" })
-        .min(1, { message: "Profile image must not be empty" })
         .optional(),
       isDeleted: z.boolean().optional(),
     }),

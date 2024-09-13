@@ -59,7 +59,7 @@ academicSemesterSchema.pre("save", async function (next) {
   });
 
   if (isSemesterExists) {
-    throw new AppError(httpStatus.NOT_FOUND, "Semester is already exists");
+    throw new AppError(httpStatus.BAD_REQUEST, "Semester is already exists");
   }
 
   next();
@@ -72,7 +72,7 @@ academicSemesterSchema.pre("findOneAndUpdate", async function (next) {
   const isSemesterExists = await AcademicSemester.findOne(query);
 
   if (!isSemesterExists) {
-    throw new AppError(httpStatus.NOT_FOUND, "This semester doesn't exist!");
+    throw new AppError(httpStatus.BAD_REQUEST, "This semester doesn't exist!");
   }
 
   next();

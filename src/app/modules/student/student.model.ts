@@ -91,7 +91,7 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       type: userNameSchema,
       required: [true, "Name is required"],
     },
-    gender: {
+    gander: {
       type: String,
       enum: {
         values: ["male", "female", "other"],
@@ -100,6 +100,12 @@ const studentSchema = new Schema<TStudent, StudentModel>(
       required: [true, "Gender is required"],
     },
     dateOfBirth: { type: Date },
+    religion: {
+      type: String,
+      enum: ["Islam", "Hindu", "Christian", "Buddhist", "Others"],
+      required: [true, "Religion is required"],
+      trim: true,
+    },
     email: {
       type: String,
       required: [true, "Email is required"],
@@ -160,12 +166,17 @@ const studentSchema = new Schema<TStudent, StudentModel>(
     toJSON: {
       virtuals: true,
     },
+    timestamps: true,
   },
 );
 
 //virtual
 studentSchema.virtual("fullName").get(function () {
-  return this?.name?.firstName + this?.name?.middleName + this?.name?.lastName;
+  return (
+    `${this?.name?.firstName} ` +
+    `${this?.name?.middleName} ` +
+    `${this?.name?.lastName} `
+  );
 });
 
 // Query Middleware

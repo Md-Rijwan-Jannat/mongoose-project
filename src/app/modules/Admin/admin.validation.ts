@@ -17,8 +17,8 @@ const createAdminSchemaValidation = z.object({
     password: z.string(),
     admin: z.object({
       name: AdminNameSchema,
-      gender: z
-        .enum(["male", "female"])
+      gander: z
+        .enum(["male", "female", "other"])
         .or(
           z.string({ invalid_type_error: "Gender must be 'male' or 'female'" }),
         ),
@@ -53,10 +53,6 @@ const createAdminSchemaValidation = z.object({
       permanentAddress: z
         .string({ required_error: "Permanent address is required" })
         .min(1, { message: "Permanent address must not be empty" }),
-      profileImage: z
-        .string({ required_error: "Profile image is required" })
-        .min(1, { message: "Profile image must not be empty" })
-        .optional(),
     }),
   }),
 });

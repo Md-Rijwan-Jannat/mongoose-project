@@ -23,9 +23,9 @@ const facultySchema = new Schema<IFaculty>(
       type: facultyNameSchema,
       required: true,
     },
-    gender: {
+    gander: {
       type: String,
-      enum: ["male", "female"],
+      enum: ["male", "female", "other"],
       required: [true, "Gender is required"],
     },
     religion: {
@@ -94,12 +94,21 @@ const facultySchema = new Schema<IFaculty>(
     },
     isDeleted: { type: Boolean, default: false },
   },
-  { timestamps: true },
+  {
+    toJSON: {
+      virtuals: true,
+    },
+    timestamps: true,
+  },
 );
 
 //virtual
 facultySchema.virtual("fullName").get(function () {
-  return this?.name?.firstName + this?.name?.middleName + this?.name?.lastName;
+  return (
+    `${this?.name?.firstName} ` +
+    `${this?.name?.middleName} ` +
+    `${this?.name?.lastName} `
+  );
 });
 
 // Query Middleware

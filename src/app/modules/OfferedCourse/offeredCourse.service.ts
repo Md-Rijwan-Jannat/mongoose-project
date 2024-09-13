@@ -19,7 +19,7 @@ const createOfferedCourseIntoDB = async (payload: IOfferedCourse) => {
     academicFaculty,
     course,
     faculty,
-    session,
+    section,
     days,
     startTime,
     endTime,
@@ -84,7 +84,7 @@ const createOfferedCourseIntoDB = async (payload: IOfferedCourse) => {
     await OfferedCourse.findOne({
       semesterRegistration,
       course,
-      session,
+      section,
     });
 
   if (isSemesterRegistrationSameAndSessionSameAndCourseSameExists) {
@@ -162,11 +162,14 @@ const getMyOfferedCourseFromDB = async (
   }
 
   const currentOngoingRegistrationSemester = await SemesterRegistration.findOne(
-    { status: "UPCOMING" },
+    { status: "ONGOING" },
   );
 
   if (!currentOngoingRegistrationSemester) {
-    throw new AppError(httpStatus.NOT_FOUND, "There is no ongoing semester");
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      "There is no ongoing semester registration!",
+    );
   }
 
   const page = Number(query?.page) || 1;
@@ -191,6 +194,58 @@ const getMyOfferedCourseFromDB = async (
     },
     {
       $unwind: "$course",
+    },
+    {
+      $lookup: {
+        from: "faculties",
+        localField: "faculty",
+        foreignField: "_id",
+        as: "faculty",
+      },
+    },
+    {
+      $unwind: "$faculty",
+    },
+    {
+      $lookup: {
+        from: "academicsemesters",
+        localField: "academicSemester",
+        foreignField: "_id",
+        as: "academicSemester",
+      },
+    },
+    {
+      $lookup: {
+        from: "semesterregistrations",
+        localField: "semesterRegistration",
+        foreignField: "_id",
+        as: "semesterRegistration",
+      },
+    },
+    {
+      $unwind: "$academicSemester",
+    },
+    {
+      $lookup: {
+        from: "academicdepartments",
+        localField: "academicDepartment",
+        foreignField: "_id",
+        as: "academicDepartment",
+      },
+    },
+    {
+      $unwind: "$academicDepartment",
+    },
+    {
+      $lookup: {
+        from: "academicfaculties",
+        localField: "academicFaculty",
+        foreignField: "_id",
+        as: "academicFaculty",
+      },
+    },
+    {
+      $unwind: "$academicFaculty",
     },
     {
       $lookup: {
@@ -222,7 +277,7 @@ const getMyOfferedCourseFromDB = async (
             },
           },
         ],
-        as: "enrolledCourses",
+        as: "enrolledCoursesData",
       },
     },
     {
@@ -279,7 +334,7 @@ const getMyOfferedCourseFromDB = async (
             "$course._id",
             {
               $map: {
-                input: "$enrolledCourses",
+                input: "$enrolledCoursesData",
                 as: "enrolledCourse",
                 in: "$$enrolledCourse.course",
               },
@@ -291,7 +346,7 @@ const getMyOfferedCourseFromDB = async (
     {
       $match: {
         isAlreadyEnrolled: false,
-        isPreRequisitesFullFilled: true,
+        // isPreRequisitesFullFilled: true,
       },
     },
   ];
@@ -310,7 +365,7 @@ const getMyOfferedCourseFromDB = async (
     ...paginationQuery,
   ]);
 
-  const total = (await OfferedCourse.aggregate([...aggregationQuery])).length;
+  const total = (await OfferedCourse.aggregate(aggregationQuery)).length;
   const totalPage = Math.ceil(result.length / limit);
 
   return {
@@ -323,6 +378,190 @@ const getMyOfferedCourseFromDB = async (
     result,
   };
 };
+
+// const getMyOfferedCourseFromDB = async (
+//   userId: string,
+//   query: Record<string, unknown>,
+// ) => {
+//   const student = await Student.findOne({ id: userId });
+
+//   if (!student) {
+//     throw new AppError(httpStatus.NOT_FOUND, "Student not found");
+//   }
+
+//   if (!student.academicDepartment) {
+//     throw new AppError(httpStatus.NOT_FOUND, "Academic department not found");
+//   }
+
+//   if (!student.academicFaculty) {
+//     throw new AppError(httpStatus.NOT_FOUND, "Academic faculty not found");
+//   }
+
+//   const currentOngoingRegistrationSemester = await SemesterRegistration.findOne(
+//     { status: "ONGOING" },
+//   );
+
+//   if (!currentOngoingRegistrationSemester) {
+//     throw new AppError(
+//       httpStatus.NOT_FOUND,
+//       "There is no ongoing semester registration!",
+//     );
+//   }
+
+//   const page = Number(query?.page) || 1;
+//   const limit = Number(query?.limit) || 10;
+//   const skip = (page - 1) * limit;
+
+//   const aggregationQuery = [
+//     {
+//       $match: {
+//         semesterRegistration: currentOngoingRegistrationSemester?._id,
+//         academicFaculty: student.academicFaculty,
+//         academicDepartment: student.academicDepartment,
+//       },
+//     },
+//     {
+//       $lookup: {
+//         from: "courses",
+//         localField: "course",
+//         foreignField: "_id",
+//         as: "course",
+//       },
+//     },
+//     {
+//       $unwind: "$course",
+//     },
+//     {
+//       $lookup: {
+//         from: "enrolledcourses",
+//         let: {
+//           currentOngoingRegistrationSemester:
+//             currentOngoingRegistrationSemester?._id,
+//           currentStudent: student._id,
+//         },
+//         pipeline: [
+//           {
+//             $match: {
+//               $expr: {
+//                 $and: [
+//                   {
+//                     $eq: [
+//                       "$semesterRegistration",
+//                       "$$currentOngoingRegistrationSemester",
+//                     ],
+//                   },
+//                   {
+//                     $eq: ["$student", "$$currentStudent"],
+//                   },
+//                   {
+//                     $eq: ["$isEnrolled", true],
+//                   },
+//                 ],
+//               },
+//             },
+//           },
+//         ],
+//         as: "enrolledCoursesData",
+//       },
+//     },
+//     {
+//       $lookup: {
+//         from: "enrolledcourses",
+//         let: {
+//           currentStudent: student._id,
+//         },
+//         pipeline: [
+//           {
+//             $match: {
+//               $expr: {
+//                 $and: [
+//                   {
+//                     $eq: ["$student", "$$currentStudent"],
+//                   },
+//                   {
+//                     $eq: ["$isComplete", true],
+//                   },
+//                 ],
+//               },
+//             },
+//           },
+//         ],
+//         as: "completedCourses",
+//       },
+//     },
+//     {
+//       $addFields: {
+//         completedCourseIds: {
+//           $map: {
+//             input: "$completedCourses",
+//             as: "completed",
+//             in: "$$completed.course",
+//           },
+//         },
+//       },
+//     },
+//     {
+//       $addFields: {
+//         isPreRequisitesFullFilled: {
+//           $or: [
+//             { $eq: ["$course.preRequisitesCourses", []] },
+//             {
+//               $setIsSubset: [
+//                 "$course.preRequisitesCourses.course",
+//                 "$completedCourseIds",
+//               ],
+//             },
+//           ],
+//         },
+//         isAlreadyEnrolled: {
+//           $in: [
+//             "$course._id",
+//             {
+//               $map: {
+//                 input: "$enrolledCoursesData",
+//                 as: "enrolledCourse",
+//                 in: "$$enrolledCourse.course",
+//               },
+//             },
+//           ],
+//         },
+//       },
+//     },
+//     {
+//       $match: {
+//         isAlreadyEnrolled: false,
+//         // isPreRequisitesFullFilled: true,
+//       },
+//     },
+//   ];
+
+//   const paginationQuery = [
+//     {
+//       $skip: skip,
+//     },
+//     {
+//       $limit: limit,
+//     },
+//   ];
+
+//   const result = await OfferedCourse.aggregate([
+//     ...aggregationQuery,
+//     ...paginationQuery,
+//   ]);
+
+//   const total = (await OfferedCourse.aggregate(aggregationQuery)).length;
+//   const totalPage = Math.ceil(result.length / limit);
+
+//   return {
+//     meta: {
+//       limit,
+//       page,
+//       total,
+//       totalPage,
+//     },
+//     result,
+//   };
+// };
 
 const getSingleOfferedCourseFromDB = async (id: string) => {
   const result = await OfferedCourse.findById(id)
@@ -347,7 +586,7 @@ const updateOfferedCourseIntoDB = async (
     | "endTime"
   >,
 ) => {
-  const { faculty, days, startTime, endTime } = payload;
+  const { days, startTime, endTime } = payload;
 
   const isOfferedCourseExisting = await OfferedCourse.findById(id);
 
@@ -356,12 +595,6 @@ const updateOfferedCourseIntoDB = async (
   }
 
   const semesterRegistration = isOfferedCourseExisting.semesterRegistration;
-
-  const isFacultyExisting = await Faculty.findById(faculty);
-
-  if (!isFacultyExisting) {
-    throw new AppError(httpStatus.NOT_FOUND, "Faculty can not found!");
-  }
 
   const isSemesterRegistrationExisting =
     await SemesterRegistration.findById(semesterRegistration);

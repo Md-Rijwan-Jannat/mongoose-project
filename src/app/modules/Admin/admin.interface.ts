@@ -11,7 +11,7 @@ export interface IAdmin extends Document {
   id: string;
   user: Types.ObjectId;
   name: IAdminName;
-  gender: "male" | "female";
+  gander: "male" | "female" | "other";
   religion: "Islam" | "Hindu" | "Christian" | "Buddhist" | "Others";
   bloodGroup: "A+" | "A-" | "B+" | "B-" | "AB+" | "AB-" | "O+" | "O-";
   email: string;

@@ -36,3 +36,12 @@ export const academicSemesterNameCodeMapper: IAcademicSemesterCodeMapper = {
   Summer: "02",
   Fall: "03",
 };
+
+
+export const SemesterSearchableFields = [
+  "name",
+  "year",
+  "code",
+  "startMonth",
+  "endMonth",
+];

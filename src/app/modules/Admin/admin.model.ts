@@ -27,9 +27,9 @@ const adminSchema = new Schema<IAdmin>(
       type: adminNameSchema,
       required: true,
     },
-    gender: {
+    gander: {
       type: String,
-      enum: ["male", "female"],
+      enum: ["male", "female", "other"],
       required: [true, "Gender is required"],
     },
     religion: {
@@ -88,12 +88,21 @@ const adminSchema = new Schema<IAdmin>(
     },
     isDeleted: { type: Boolean, default: false },
   },
-  { timestamps: true },
+  {
+    toJSON: {
+      virtuals: true,
+    },
+    timestamps: true,
+  },
 );
 
 //virtual
 adminSchema.virtual("fullName").get(function () {
-  return this?.name?.firstName + this?.name?.middleName + this?.name?.lastName;
+  return (
+    `${this?.name?.firstName} ` +
+    `${this?.name?.middleName} ` +
+    `${this?.name?.lastName} `
+  );
 });
 
 // Query Middleware

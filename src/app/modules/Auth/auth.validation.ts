@@ -11,7 +11,7 @@ const passwordValidationSchema = z
 const authValidationSchema = z.object({
   body: z.object({
     id: z.string({
-      required_error: "This use id is required",
+      required_error: "This user Id is required",
       invalid_type_error: "This user id must be a string",
     }),
     password: passwordValidationSchema,
@@ -22,7 +22,7 @@ const loginPasswordValidationSchema = z.object({
   body: z.object({
     oldPassword: z.string({
       required_error: "Previous password is required",
-      invalid_type_error: "This user id must be a string",
+      invalid_type_error: "This password must be a string",
     }),
     newPassword: passwordValidationSchema,
   }),

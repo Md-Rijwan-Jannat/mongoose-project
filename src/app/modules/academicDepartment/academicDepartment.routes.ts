@@ -18,19 +18,29 @@ router.post(
 
 router.get(
   "/",
-  Auth(USER_ROLE.admin, USER_ROLE.faculty, USER_ROLE.student),
+  Auth(
+    USER_ROLE.superAdmin,
+    USER_ROLE.admin,
+    USER_ROLE.faculty,
+    USER_ROLE.student,
+  ),
   AcademicDepartmentControllers.getAllAcademicDepartment,
 );
 
 router.get(
   "/:departmentId",
-  Auth(USER_ROLE.admin, USER_ROLE.faculty, USER_ROLE.student),
+  Auth(
+    USER_ROLE.superAdmin,
+    USER_ROLE.admin,
+    USER_ROLE.faculty,
+    USER_ROLE.student,
+  ),
   AcademicDepartmentControllers.getSingleAcademicDepartment,
 );
 
 router.patch(
   "/:departmentId",
-  Auth(USER_ROLE.admin),
+  Auth(USER_ROLE.superAdmin, USER_ROLE.admin),
   RequestValidation(
     AcademicDepartmentValidation.updateAcademicDepartmentValidationSchema,
   ),

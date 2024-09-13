@@ -53,9 +53,9 @@ const createOfferedCourseValidationSchema = z.object({
           required_error: "Days is required",
           invalid_type_error: "Days must be string",
         }),
-        session: z.number({
-          required_error: "Session is required",
-          invalid_type_error: "Session must be a number",
+        section: z.number({
+          required_error: "Section is required",
+          invalid_type_error: "Section must be a number",
         }),
         startTime: startTimeSchema,
         endTime: endTimeSchema,
@@ -76,20 +76,26 @@ const updateOfferedCourseValidationSchema = z.object({
   body: z
     .object({
       offeredCourse: z.object({
-        faculty: z.string({
-          required_error: "Faculty is required",
-          invalid_type_error: "Faculty must be a string",
-        }),
-        maxCapacity: z.number({
-          required_error: "Max capacity is required",
-          invalid_type_error: "Max capacity must be a number",
-        }),
-        days: z.array(z.enum([...(Days as [string, ...string[]])]), {
-          required_error: "Days is required",
-          invalid_type_error: "Days must be string",
-        }),
-        startTime: startTimeSchema,
-        endTime: endTimeSchema,
+        faculty: z
+          .string({
+            required_error: "Faculty is required",
+            invalid_type_error: "Faculty must be a string",
+          })
+          .optional(),
+        maxCapacity: z
+          .number({
+            required_error: "Max capacity is required",
+            invalid_type_error: "Max capacity must be a number",
+          })
+          .optional(),
+        days: z
+          .array(z.enum([...(Days as [string, ...string[]])]), {
+            required_error: "Days is required",
+            invalid_type_error: "Days must be string",
+          })
+          .optional(),
+        startTime: startTimeSchema.optional(),
+        endTime: endTimeSchema.optional(),
       }),
     })
     .refine(

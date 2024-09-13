@@ -41,7 +41,7 @@ const enrolledCourseSchema = new Schema(
       type: Schema.Types.ObjectId,
       required: [true, "Academic semester id is required"],
       trim: true,
-      ref: "Semester",
+      ref: "AcademicSemester",
     },
     academicDepartment: {
       type: Schema.Types.ObjectId,

@@ -51,7 +51,7 @@ export const offeredCourseSchema = new Schema<IOfferedCourse>(
         enum: Days,
       },
     ],
-    session: {
+    section: {
       type: Number,
       required: [true, "Session is required"],
       trim: true,
